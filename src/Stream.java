@@ -13,7 +13,7 @@ public class Stream<I extends Serializable> {
     }
 
     public <O extends Serializable> Stream<O> map(Function<I, O> function) {
-        Container<I, O> container = new Container<>(function);
+        MapContainer<I, O> container = new MapContainer<>(function);
         generator.setTarget(container);
         return new Stream<>(container);
     }
