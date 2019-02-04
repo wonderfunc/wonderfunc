@@ -1,7 +1,12 @@
+package containers;
+
+import interfaces.Generator;
+import interfaces.Target;
+
 import java.io.Serializable;
 import java.util.function.Predicate;
 
-public class FilterContainer <I extends Serializable> implements Target<I>, Generator<I>{
+public class FilterContainer <I extends Serializable> implements Target<I>, Generator<I> {
 
     private Predicate<I> predicate;
     private Target target;

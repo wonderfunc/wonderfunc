@@ -1,3 +1,7 @@
+import containers.FilterContainer;
+import containers.MapContainer;
+import interfaces.Generator;
+
 import java.io.Serializable;
 import java.util.function.Function;
 import java.util.function.Predicate;
