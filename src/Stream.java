@@ -1,5 +1,6 @@
 import java.io.Serializable;
 import java.util.function.Function;
+import java.util.function.Predicate;
 
 public class Stream<I extends Serializable> {
     private final Generator<I> generator;
@@ -19,8 +20,13 @@ public class Stream<I extends Serializable> {
     }
 
 
+    public Stream<I> filter(Predicate<I> predicate) {
+        FilterContainer<I> container = new FilterContainer<>(predicate);
+        generator.setTarget(container);
+        return new Stream<>(container);
+    }
+
     private static <I extends Serializable> Generator<I> generatorOf(Iterable<I> iterable) {
         return null;
     }
-
 }
