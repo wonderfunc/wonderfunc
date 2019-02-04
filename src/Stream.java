@@ -1,5 +1,10 @@
+import containers.FilterContainer;
+import containers.MapContainer;
+import interfaces.Generator;
+
 import java.io.Serializable;
 import java.util.function.Function;
+import java.util.function.Predicate;
 
 public class Stream<I extends Serializable> {
     private final Generator<I> generator;
@@ -13,14 +18,19 @@ public class Stream<I extends Serializable> {
     }
 
     public <O extends Serializable> Stream<O> map(Function<I, O> function) {
-        Container<I, O> container = new Container<>(function);
+        MapContainer<I, O> container = new MapContainer<>(function);
         generator.setTarget(container);
         return new Stream<>(container);
     }
 
 
+    public Stream<I> filter(Predicate<I> predicate) {
+        FilterContainer<I> container = new FilterContainer<>(predicate);
+        generator.setTarget(container);
+        return new Stream<>(container);
+    }
+
     private static <I extends Serializable> Generator<I> generatorOf(Iterable<I> iterable) {
         return null;
     }
-
 }
