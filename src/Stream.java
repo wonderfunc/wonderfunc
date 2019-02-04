@@ -1,5 +1,6 @@
 import containers.FilterContainer;
 import containers.MapContainer;
+import containers.SourceContainer;
 import interfaces.Generator;
 
 import java.io.Serializable;
@@ -31,6 +32,6 @@ public class Stream<I extends Serializable> {
     }
 
     private static <I extends Serializable> Generator<I> generatorOf(Iterable<I> iterable) {
-        return null;
+        return new SourceContainer<>(iterable);
     }
 }
