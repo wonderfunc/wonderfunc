@@ -8,6 +8,8 @@ public class Main {
         Stream<Integer> stream = Stream.source(list())
                 .map(String::length)
                 .filter(e -> e > 10);
+
+        System.out.println();
     }
 
     private static List<String> list() {
