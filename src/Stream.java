@@ -1,37 +1,37 @@
-import containers.FilterContainer;
-import containers.MapContainer;
-import containers.SourceContainer;
-import interfaces.Generator;
+import containers.FilterUnit;
+import containers.MapUnit;
+import containers.SourceUnit;
+import interfaces.Unit;
 
 import java.io.Serializable;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
 public class Stream<I extends Serializable> {
-    private final Generator<I> generator;
+    private final Unit<I> unit;
 
-    private Stream(Generator<I> generator) {
-        this.generator = generator;
+    private Stream(Unit<I> unit) {
+        this.unit = unit;
     }
 
     public static <I extends Serializable> Stream<I> source(Iterable<I> iterable) {
-        return new Stream<>(generatorOf(iterable));
+        return new Stream<>(relayerOf(iterable));
     }
 
     public <O extends Serializable> Stream<O> map(Function<I, O> function) {
-        MapContainer<I, O> container = new MapContainer<>(function);
-        generator.setTarget(container);
+        MapUnit<I, O> container = new MapUnit<>(function);
+        unit.next(container);
         return new Stream<>(container);
     }
 
 
     public Stream<I> filter(Predicate<I> predicate) {
-        FilterContainer<I> container = new FilterContainer<>(predicate);
-        generator.setTarget(container);
+        FilterUnit<I> container = new FilterUnit<>(predicate);
+        unit.next(container);
         return new Stream<>(container);
     }
 
-    private static <I extends Serializable> Generator<I> generatorOf(Iterable<I> iterable) {
-        return new SourceContainer<>(iterable);
+    private static <I extends Serializable> Unit<I> relayerOf(Iterable<I> iterable) {
+        return new SourceUnit<>(iterable);
     }
 }
