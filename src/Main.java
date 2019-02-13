@@ -1,19 +1,18 @@
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class Main {
 
     public static void main(String[] args) {
 
-        Stream<Integer> stream = Stream.source(list())
+        List<Integer> output = Stream.source(list())
                 .map(String::length)
-                .filter(e -> e > 10);
-
-        System.out.println();
+                .filter(e -> e > 4)
+                .collect();
     }
 
     private static List<String> list() {
-        return new ArrayList<>();
+        return Arrays.asList("hello world this is an example input".split(" "));
     }
 
 }
