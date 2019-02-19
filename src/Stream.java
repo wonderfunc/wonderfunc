@@ -1,3 +1,4 @@
+import connection.Collector;
 import units.FilterUnit;
 import units.MapUnit;
 import units.SourceUnit;
@@ -10,6 +11,7 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 
 public class Stream<I extends Serializable> {
+    private static Thread collectorThread;
     private final Unit<I> unit;
     private final SourceUnit sourceUnit;
 
@@ -20,6 +22,7 @@ public class Stream<I extends Serializable> {
 
     public static <I extends Serializable> Stream<I> source(Iterable<I> iterable) {
         Unit<I> unit = relayerOf(iterable);
+        startCollector();
         return new Stream<>(unit, (SourceUnit)unit);
     }
 
@@ -38,10 +41,21 @@ public class Stream<I extends Serializable> {
 
     public List<I> collect() {
         sourceUnit.relayAll();
+        try {
+            Stream.collectorThread.join();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
         return new ArrayList<>();
     }
 
     private static <I extends Serializable> SourceUnit<I> relayerOf(Iterable<I> iterable) {
         return new SourceUnit<>(iterable);
+    }
+
+    private static void startCollector() {
+        Thread thread = new Thread(new Collector());
+        Stream.collectorThread = thread;
+        thread.start();
     }
 }
