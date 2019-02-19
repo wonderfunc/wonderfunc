@@ -3,11 +3,8 @@ package units;
 import interfaces.Relay;
 import interfaces.Target;
 import interfaces.Unit;
-import json.JSONReader;
 
-import java.io.*;
-import java.net.ServerSocket;
-import java.net.Socket;
+import java.io.Serializable;
 
 public class SourceUnit<I extends Serializable> implements Relay<I>, Unit<I> {
 
@@ -24,12 +21,7 @@ public class SourceUnit<I extends Serializable> implements Relay<I>, Unit<I> {
     }
 
     public void relayAll() {
-        try {
-            for(I data : iterable) relay(data);
-            start();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        for(I data : iterable) relay(data);
     }
 
     @Override
@@ -37,16 +29,4 @@ public class SourceUnit<I extends Serializable> implements Relay<I>, Unit<I> {
         target.put(data);
     }
 
-    private void start() throws IOException {
-
-        int port = Integer.parseInt(JSONReader.read("sourUnitPort"));
-
-        ServerSocket serverSocket = new ServerSocket(port);
-        Socket clientSocket = serverSocket.accept();
-        PrintWriter out = new PrintWriter(clientSocket.getOutputStream(), true);
-        BufferedReader in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
-
-        String inputLine;
-        while ((inputLine = in.readLine()) != null) out.println(inputLine);
-    }
 }
