@@ -15,7 +15,6 @@ public class MapUnit<T extends Serializable, R extends Serializable> implements 
 
     private Socket clientSocket;
     private PrintWriter out;
-    private BufferedReader in;
 
     public MapUnit(Function<T, R> function) {
         this.function = function;
@@ -50,12 +49,11 @@ public class MapUnit<T extends Serializable, R extends Serializable> implements 
     }
 
     private void startConnection() throws IOException {
-        String sourceUnitIP = JSONReader.read("sourceUnitIP");
-        int port = Integer.parseInt(JSONReader.read("sourUnitPort"));
+        String sourceUnitIP = JSONReader.read("collectorIP");
+        int port = Integer.parseInt(JSONReader.read("collectorPort"));
 
         clientSocket = new Socket(sourceUnitIP, port);
         out = new PrintWriter(clientSocket.getOutputStream(), true);
-        in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
     }
 
     private void relayToSource(R data) {
@@ -63,7 +61,6 @@ public class MapUnit<T extends Serializable, R extends Serializable> implements 
     }
 
     private void stopConnection() throws IOException {
-        in.close();
         out.close();
         clientSocket.close();
     }

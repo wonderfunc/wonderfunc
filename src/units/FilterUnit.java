@@ -16,7 +16,6 @@ public class FilterUnit<T extends Serializable> implements Target<T>, Unit<T>, R
 
     private Socket clientSocket;
     private PrintWriter out;
-    private BufferedReader in;
 
     public FilterUnit(Predicate<T> predicate) {
         this.predicate = predicate;
@@ -51,12 +50,11 @@ public class FilterUnit<T extends Serializable> implements Target<T>, Unit<T>, R
     }
 
     private void startConnection() throws IOException {
-        String sourceUnitIP = JSONReader.read("sourceUnitIP");
-        int port = Integer.parseInt(JSONReader.read("sourUnitPort"));
+        String sourceUnitIP = JSONReader.read("collectorIP");
+        int port = Integer.parseInt(JSONReader.read("collectorPort"));
 
         clientSocket = new Socket(sourceUnitIP, port);
         out = new PrintWriter(clientSocket.getOutputStream(), true);
-        in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
     }
 
     private void relayToSource(T data) {
@@ -64,7 +62,6 @@ public class FilterUnit<T extends Serializable> implements Target<T>, Unit<T>, R
     }
 
     private void stopConnection() throws IOException {
-        in.close();
         out.close();
         clientSocket.close();
     }
