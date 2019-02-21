@@ -43,9 +43,14 @@ public class Stream<T extends Serializable> {
 
 
         public Thread deploy() {
-
             this.start();
             return this;
+        }
+
+        @Override
+        public synchronized void start() {
+            super.start();
+            source.relayAll();
         }
     }
 }
