@@ -1,21 +1,20 @@
 package stream;
 
-import operations.Operation;
-
+import java.io.Serializable;
 import java.util.List;
 
-public class Source<T> {
+public class Source<T extends Serializable> {
 
     private final List<T> list;
-    private final Stream stream;
+    private final Stream<T> stream;
 
-    public Source(List<T> list, Stream stream) {
+    public Source(List<T> list, Stream<T> stream) {
         this.list = list;
         this.stream = stream;
     }
 
     public void relayAll() {
-        final Operation operation = stream.nextOperation();
-        for(T data : list) operation.put(data);
+        for (T data : list) stream.nextOperation().put(data);
     }
+
 }
