@@ -1,11 +1,14 @@
 package operations;
 
+import operations.interfaces.Operation;
+import operations.interfaces.Relay;
+import operations.interfaces.Target;
 import stream.Stream;
 
 import java.io.Serializable;
 import java.util.function.Function;
 
-public class MapOperation<T extends Serializable, R extends Serializable> implements Operation<T> {
+public class MapOperation<T extends Serializable, R extends Serializable> implements Operation<T>, Relay<T>, Target<T> {
     private Function<T, R> function;
     private Stream<T> stream;
 
@@ -16,6 +19,16 @@ public class MapOperation<T extends Serializable, R extends Serializable> implem
 
     @Override
     public void put(T data) {
-        stream.nextOperation().put(function.apply(data));
+
+    }
+
+    @Override
+    public void next(Target<T> target) {
+
+    }
+
+    @Override
+    public void relay(T data) {
+
     }
 }

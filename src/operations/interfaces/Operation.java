@@ -1,7 +1,7 @@
-package operations;
+package operations.interfaces;
 
 import java.io.Serializable;
 
 public interface Operation<T extends Serializable> {
-    void put(T data);
+    void next(Target<T> target);
 }

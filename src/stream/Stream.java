@@ -2,7 +2,7 @@ package stream;
 
 import operations.FilterOperation;
 import operations.MapOperation;
-import operations.Operation;
+import operations.interfaces.Operation;
 
 import java.io.Serializable;
 import java.util.ArrayList;
