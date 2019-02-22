@@ -14,29 +14,32 @@ public class Stream<T extends Serializable> {
     private Source source;
     private List<Operation> operations = new ArrayList<>();
     private Target target;
+    private int operationIndex;
 
-    public Stream(Source source) {
-        this.source = source;
-    }
-
-    public static <T extends Serializable> Stream<T> source(List<T> list) {
-        return new Stream<>(new Source(list));
+    public Stream(List<T> list) {
+        this.source = new Source<>(list, this);
+        this.operationIndex = 0;
     }
 
     public Stream<T> filter(Predicate<T> predicate) {
-        operations.add(new FilterOperation<>(predicate));
+        operations.add(new FilterOperation<T>(predicate, this));
         return this;
     }
 
     @SuppressWarnings("unchecked")
     public <R extends Serializable> Stream<R> map(Function<T, R> function) {
-        operations.add(new MapOperation<>(function));
+        operations.add(new MapOperation<>(function, this));
         return (Stream<R>) this;
     }
 
     public Thread collectTo(List<T> list) {
         this.target = new Target<>(list);
         return new StreamThread().deploy();
+    }
+
+    public Operation nextOperation() {
+        if (operationIndex == operations.size() - 1) return new EndStreamOperation();
+        return operations.get(operationIndex++);
     }
 
     private class StreamThread extends Thread {
