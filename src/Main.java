@@ -9,7 +9,7 @@ public class Main {
 
         List<Integer> output = new ArrayList<>();
 
-        Thread thread = Stream.source(list())
+        Thread thread = new Stream<>(list())
                 .filter(e -> e.contains("e"))
                 .map(String::length)
                 .collectTo(output);
