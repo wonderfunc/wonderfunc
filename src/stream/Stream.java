@@ -12,7 +12,7 @@ import java.util.function.Predicate;
 
 public class Stream<T extends Serializable> {
     private Source source;
-    private List<Operation> operations = new ArrayList<>();
+    private List<Operation<T>> operations = new ArrayList<>();
     private Target target;
     private int operationIndex;
 
@@ -22,7 +22,7 @@ public class Stream<T extends Serializable> {
     }
 
     public Stream<T> filter(Predicate<T> predicate) {
-        operations.add(new FilterOperation<T>(predicate, this));
+        operations.add(new FilterOperation<>(predicate, this));
         return this;
     }
 
@@ -37,8 +37,7 @@ public class Stream<T extends Serializable> {
         return new StreamThread().deploy();
     }
 
-    public Operation nextOperation() {
-        if (operationIndex == operations.size() - 1) return new EndStreamOperation();
+    public Operation<T> nextOperation() {
         return operations.get(operationIndex++);
     }
 
