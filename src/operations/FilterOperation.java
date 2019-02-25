@@ -23,12 +23,12 @@ public class FilterOperation<T extends Serializable> implements Operation<T>, Re
     }
 
     @Override
-    public void relay(T data) {
-
+    public void put(T data) {
+        if (predicate.test(data)) relay(data);
     }
 
     @Override
-    public void put(T data) {
-
+    public void relay(T data) {
+        next.put(data);
     }
 }
