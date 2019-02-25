@@ -16,10 +16,11 @@ public class Stream<T extends Serializable> {
     private OutputTarget target;
 
     public Stream(List<T> list) {
-        this.source = new Source<>(list, this);
+        this.source = new Source<>(list);
         operations.add(source);
     }
 
+    @SuppressWarnings("unchecked")
     public Stream<T> filter(Predicate<T> predicate) {
         final FilterOperation<T> next = new FilterOperation<>(predicate);
         operations.get(operations.size() - 1).next(next);
