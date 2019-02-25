@@ -36,12 +36,8 @@ public class Stream<T extends Serializable> {
     }
 
     public Thread collectTo(List<T> list) {
-        this.target = new Target<>(list);
+        this.target = new OutputTarget<>(list);
         return new StreamThread().deploy();
-    }
-
-    public Operation<T> nextOperation() {
-        return operations.get(operationIndex++);
     }
 
     private class StreamThread extends Thread {
