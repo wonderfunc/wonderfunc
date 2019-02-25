@@ -22,12 +22,13 @@ public class MapOperation<T extends Serializable, R extends Serializable> implem
     }
 
     @Override
-    public void next(Target<T> target) {
-
+    public void put(T data) {
+        relay(function.apply(data));
     }
 
-    @Override
-    public void relay(T data) {
 
+    @Override
+    public void relay(R data) {
+        next.put(data);
     }
 }
