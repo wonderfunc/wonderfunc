@@ -1,9 +1,10 @@
 package operations;
 
+import message.Message;
+import message.MessageType;
 import operations.interfaces.Operation;
 import operations.interfaces.Relay;
 import operations.interfaces.Target;
-import stream.Stream;
 
 import java.io.Serializable;
 import java.util.function.Predicate;
@@ -23,12 +24,15 @@ public class FilterOperation<T extends Serializable> implements Operation<T>, Re
     }
 
     @Override
-    public void put(T data) {
-        if (predicate.test(data)) relay(data);
+    public void put(Message<T> message) {
+        if (message.type() == MessageType.DATA)
+            if (predicate.test(message.data())) relay(message);
+        else
+            relay(message);
     }
 
     @Override
-    public void relay(T data) {
-        next.put(data);
+    public void relay(Message<T> message) {
+        next.put(message);
     }
 }

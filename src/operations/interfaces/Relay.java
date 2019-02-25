@@ -1,5 +1,9 @@
 package operations.interfaces;
 
-public interface Relay<T> {
-    void relay(T data);
+import message.Message;
+
+import java.io.Serializable;
+
+public interface Relay<T extends Serializable> {
+    void relay(Message<T> data);
 }

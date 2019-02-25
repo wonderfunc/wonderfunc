@@ -19,11 +19,17 @@ public class Source<T extends Serializable> implements Operation<T>, Relay<T> {
     }
 
     public void relayAll() {
-        for (T data : list) stream.nextOperation().put(data);
+        for (T data : list) relay(new Message<>(data, MessageType.DATA));
+        relay(new Message<>(MessageType.ENDOFSTREAM));
+    }
 
     @Override
     public void next(Target<T> target) {
         this.next = target;
     }
 
+    @Override
+    public void relay(Message<T> message) {
+        next.put(message);
+    }
 }

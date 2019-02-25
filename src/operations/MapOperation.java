@@ -1,9 +1,10 @@
 package operations;
 
+import message.Message;
+import message.MessageType;
 import operations.interfaces.Operation;
 import operations.interfaces.Relay;
 import operations.interfaces.Target;
-import stream.Stream;
 
 import java.io.Serializable;
 import java.util.function.Function;
@@ -21,14 +22,18 @@ public class MapOperation<T extends Serializable, R extends Serializable> implem
         this.next = target;
     }
 
+
+    @SuppressWarnings("unchecked")
     @Override
-    public void put(T data) {
-        relay(function.apply(data));
+    public void put(Message<T> message) {
+        if (message.type() == MessageType.DATA)
+            relay(new Message<>(function.apply(message.data()), MessageType.DATA));
+        else
+            relay((Message<R>)message);
     }
 
-
     @Override
-    public void relay(R data) {
-        next.put(data);
+    public void relay(Message<R> message) {
+        next.put(message);
     }
 }
