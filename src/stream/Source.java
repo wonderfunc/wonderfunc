@@ -1,5 +1,7 @@
 package stream;
 
+import message.Message;
+import message.MessageType;
 import operations.interfaces.Operation;
 import operations.interfaces.Relay;
 import operations.interfaces.Target;
@@ -10,12 +12,10 @@ import java.util.List;
 public class Source<T extends Serializable> implements Operation<T>, Relay<T> {
 
     private final List<T> list;
-    private final Stream<T> stream;
     private Target<T> next;
 
-    public Source(List<T> list, Stream<T> stream) {
+    public Source(List<T> list) {
         this.list = list;
-        this.stream = stream;
     }
 
     public void relayAll() {
