@@ -8,18 +8,17 @@ import stream.Stream;
 import java.io.Serializable;
 import java.util.function.Function;
 
-public class MapOperation<T extends Serializable, R extends Serializable> implements Operation<T>, Relay<T>, Target<T> {
+public class MapOperation<T extends Serializable, R extends Serializable> implements Operation<R>, Relay<R>, Target<T> {
     private Function<T, R> function;
-    private Stream<T> stream;
+    private Target<R> next;
 
-    public MapOperation(Function<T, R> function, Stream<T> stream) {
+    public MapOperation(Function<T, R> function) {
         this.function = function;
-        this.stream = stream;
     }
 
     @Override
-    public void put(T data) {
-
+    public void next(Target<R> target) {
+        this.next = target;
     }
 
     @Override

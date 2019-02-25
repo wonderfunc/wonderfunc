@@ -11,16 +11,15 @@ import java.util.function.Predicate;
 public class FilterOperation<T extends Serializable> implements Operation<T>, Relay<T>, Target<T> {
 
     private Predicate<T> predicate;
-    private Stream<T> stream;
+    private Target<T> next;
 
-    public FilterOperation(Predicate<T> predicate, Stream<T> stream) {
+    public FilterOperation(Predicate<T> predicate) {
         this.predicate = predicate;
-        this.stream = stream;
     }
 
     @Override
     public void next(Target<T> target) {
-
+        this.next = target;
     }
 
     @Override

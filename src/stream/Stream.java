@@ -12,23 +12,26 @@ import java.util.function.Predicate;
 
 public class Stream<T extends Serializable> {
     private Source source;
-    private List<Operation<T>> operations = new ArrayList<>();
-    private Target target;
-    private int operationIndex;
+    private List<Operation> operations = new ArrayList<>();
+    private OutputTarget target;
 
     public Stream(List<T> list) {
         this.source = new Source<>(list, this);
-        this.operationIndex = 0;
+        operations.add(source);
     }
 
     public Stream<T> filter(Predicate<T> predicate) {
-        operations.add(new FilterOperation<>(predicate, this));
+        final FilterOperation<T> next = new FilterOperation<>(predicate);
+        operations.get(operations.size() - 1).next(next);
+        operations.add(next);
         return this;
     }
 
     @SuppressWarnings("unchecked")
     public <R extends Serializable> Stream<R> map(Function<T, R> function) {
-        operations.add(new MapOperation<>(function, this));
+        final MapOperation<T, R> next = new MapOperation<>(function);
+        operations.get(operations.size() - 1).next(next);
+        operations.add(next);
         return (Stream<R>) this;
     }
 
