@@ -1,6 +1,7 @@
 import stream.Stream;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class Main {
@@ -9,16 +10,18 @@ public class Main {
 
         List<Integer> output = new ArrayList<>();
 
-        Thread thread = new Stream<>(list())
+        Stream<Integer> stream = new Stream<>(list())
                 .filter(e -> e.contains("e"))
-                .map(String::length)
+                .map(String::length);
+
+        Thread thread = stream
                 .collectTo(output);
 
         thread.wait();
     }
 
     private static List<String> list() {
-        return new ArrayList<>();
+        return Arrays.asList("Hello this is a prove to check if everything went correctly");
     }
 
 }
