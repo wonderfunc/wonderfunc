@@ -23,4 +23,12 @@ public class Message<T extends Serializable> {
     public MessageType type() {
         return type;
     }
+
+    @Override
+    public String toString() {
+        return "Message{" +
+                "data=" + data +
+                ", type=" + type +
+                '}';
+    }
 }
