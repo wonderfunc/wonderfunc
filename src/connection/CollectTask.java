@@ -1,8 +1,9 @@
 package connection;
 
-import java.io.BufferedReader;
+import message.Message;
+
 import java.io.IOException;
-import java.io.InputStreamReader;
+import java.io.ObjectInputStream;
 import java.net.Socket;
 
 public class CollectTask implements Runnable {
@@ -17,14 +18,14 @@ public class CollectTask implements Runnable {
     public void run() {
         try {
             readInput();
-        } catch (IOException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
-    private void readInput() throws IOException {
-        BufferedReader in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
-        String inputLine;
-        while ((inputLine = in.readLine()) != null) System.out.println(inputLine);
+    private void readInput() throws IOException, ClassNotFoundException {
+        ObjectInputStream inputStream = new ObjectInputStream(clientSocket.getInputStream());
+        Message inputLine;
+        while ((inputLine = (Message) inputStream.readObject()) != null) System.out.println(inputLine);
     }
 }

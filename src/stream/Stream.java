@@ -1,10 +1,13 @@
 package stream;
 
+import connection.CollectTask;
 import operations.FilterOperation;
 import operations.MapOperation;
 import operations.interfaces.Operation;
 
+import java.io.IOException;
 import java.io.Serializable;
+import java.net.ServerSocket;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Function;
@@ -38,21 +41,26 @@ public class Stream<T extends Serializable> {
 
     public Thread collectTo(List<T> list) {
         this.target = new OutputTarget<>(list);
-        return new StreamThread().deploy();
+        StreamThread streamThread = new StreamThread();
+        source.relayAll();
+        streamThread.start();
+        return streamThread;
     }
 
     private class StreamThread extends Thread {
 
 
-        public Thread deploy() {
-            this.start();
-            return this;
-        }
-
         @Override
         public synchronized void start() {
             super.start();
-            source.relayAll();
+
+            try {
+                ServerSocket serverSocket = new ServerSocket(8081);
+                while (true)
+                    new Thread(new CollectTask(serverSocket.accept())).start();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
     }
 }
