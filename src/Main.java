@@ -6,7 +6,7 @@ import java.util.List;
 
 public class Main {
 
-    public static void main(String[] args) throws InterruptedException {
+    public static void main(String[] args) {
 
         List<Integer> output = new ArrayList<>();
 
@@ -17,11 +17,11 @@ public class Main {
         Thread thread = stream
                 .collectTo(output);
 
-        thread.wait();
+        //thread.wait();
     }
 
     private static List<String> list() {
-        return Arrays.asList("Hello this is a prove to check if everything went correctly");
+        return Arrays.asList("Hello this is a prove to check if everything went correctly".split(" "));
     }
 
 }
