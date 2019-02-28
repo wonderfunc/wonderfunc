@@ -4,10 +4,12 @@ import connection.CollectTask;
 import operations.FilterOperation;
 import operations.MapOperation;
 import operations.interfaces.Operation;
+import utils.JSONReader;
 
 import java.io.IOException;
 import java.io.Serializable;
 import java.net.ServerSocket;
+import java.net.Socket;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Function;
@@ -55,12 +57,13 @@ public class Stream<T extends Serializable> {
             super.start();
 
             try {
-                ServerSocket serverSocket = new ServerSocket(8081);
+                ServerSocket serverSocket = new ServerSocket(Integer.parseInt(JSONReader.get("collectorPort")));
                 while (true)
                     new Thread(new CollectTask(serverSocket.accept())).start();
             } catch (IOException e) {
                 e.printStackTrace();
             }
+
         }
     }
 }
