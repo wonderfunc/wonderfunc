@@ -29,10 +29,13 @@ public class FilterOperation<T extends Serializable> implements Operation<T>, Re
 
     @Override
     public void put(Message<T> message) {
-        if (message.type() == MessageType.DATA)
-            if (predicate.test(message.data())) relay(message);
-        else
+        if (message.type() == MessageType.DATA) {
+            if (predicate.test(message.data())){
+                relay(message);
+            }
+        } else {
             relay(message);
+        }
     }
 
     @Override
