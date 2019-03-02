@@ -1,3 +1,6 @@
+import stream.Stream;
+
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -5,14 +8,20 @@ public class Main {
 
     public static void main(String[] args) {
 
-        List<Integer> output = Stream.source(list())
-                .map(String::length)
-                .filter(e -> e > 4)
-                .collect();
+        List<Integer> output = new ArrayList<>();
+
+        Stream<Integer> stream = new Stream<>(list())
+                .filter(e -> e.contains("e"))
+                .map(String::length);
+
+        Thread thread = stream
+                .collectTo(output);
+
+        //thread.wait();
     }
 
     private static List<String> list() {
-        return Arrays.asList("hello world this is an example input".split(" "));
+        return Arrays.asList("Hello this is a prove to check if everything went correctly".split(" "));
     }
 
 }
