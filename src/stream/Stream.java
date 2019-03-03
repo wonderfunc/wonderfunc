@@ -14,7 +14,7 @@ import java.util.function.Predicate;
 public class Stream<T extends Serializable> {
     private Source source;
     private List<Operation> operations = new ArrayList<>();
-    private OutputTarget target;
+    private OutputTarget<T> target;
 
     public Stream(List<T> list) {
         this.source = new Source<>(list);
@@ -38,8 +38,8 @@ public class Stream<T extends Serializable> {
     }
 
     public Thread collectTo(List<T> list) {
-        this.target = new OutputTarget<>(list);
-        Thread streamThread = new Thread(new StreamThread());
+        target = new OutputTarget<>(list);
+        Thread streamThread = new Thread(new StreamThread<>(target));
         streamThread.start();
         source.relayAll();
         return streamThread;

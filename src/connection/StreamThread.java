@@ -1,29 +1,45 @@
 package connection;
 
+import stream.OutputTarget;
 import utils.JSONReader;
 
 import java.io.IOException;
+import java.io.Serializable;
 import java.net.ServerSocket;
+import java.net.SocketException;
 
-public class StreamThread implements Runnable {
+public class StreamThread<T extends Serializable> implements Runnable {
 
     private ServerSocket serverSocket;
+    private OutputTarget<T> outputTarget;
+
+    public StreamThread(OutputTarget<T> outputTarget) {
+        this.outputTarget = outputTarget;
+    }
 
     @Override
     public void run() {
         try {
             serverSocket = new ServerSocket(Integer.parseInt(JSONReader.get("collectorPort")));
-            while (true)
-                new Thread(new CollectTask(serverSocket.accept(), this)).start();
-        } catch (IOException e) {
+            while (true) {
+                new Thread(new CollectTask(serverSocket.accept(), this))
+                        .start();
+            }
+        } catch (SocketException ignored){
+
+        } catch(IOException e) {
             e.printStackTrace();
         }
     }
 
-    public void end() {
+    public synchronized void addToOutPutTarget(T data){
+        outputTarget.add(data);
+    }
+
+    public synchronized void closeStream() {
         try {
             serverSocket.close();
-        } catch (Throwable e) {
+        } catch (IOException e) {
             e.printStackTrace();
         }
     }

@@ -28,10 +28,8 @@ public class CollectTask implements Runnable {
 
     private void readInput() throws IOException, ClassNotFoundException {
         ObjectInputStream inputStream = new ObjectInputStream(clientSocket.getInputStream());
-        Message inputMessage;
-        while ((inputMessage = (Message) inputStream.readObject()) != null) {
-            if (inputMessage.type() == MessageType.ENDOFSTREAM) streamThread.end();
-            else System.out.println(inputMessage);
-        }
+        Message inputMessage = (Message) inputStream.readObject();
+        if (inputMessage.type() == MessageType.ENDOFSTREAM) streamThread.closeStream();
+        else streamThread.addToOutPutTarget(inputMessage.data());
     }
 }
