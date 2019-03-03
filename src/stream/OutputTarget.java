@@ -4,7 +4,13 @@ import java.io.Serializable;
 import java.util.List;
 
 public class OutputTarget<T extends Serializable> {
-    public OutputTarget(List<T> list) {
+    private List<T> list;
 
+    public OutputTarget(List<T> list) {
+        this.list = list;
+    }
+
+    public void add(T data) {
+        list.add(data);
     }
 }

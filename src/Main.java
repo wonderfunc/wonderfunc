@@ -16,8 +16,6 @@ public class Main {
 
         Thread thread = stream
                 .collectTo(output);
-
-        //thread.wait();
     }
 
     private static List<String> list() {
