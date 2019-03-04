@@ -1,3 +1,5 @@
+import deployers.LocalDeployer;
+import stream.Pipeline;
 import stream.Stream;
 
 import java.util.ArrayList;
@@ -14,8 +16,10 @@ public class Main {
                 .filter(e -> e.contains("e"))
                 .map(String::length);
 
-        Thread thread = stream
+        Pipeline pipeline = stream
                 .collectTo(output);
+
+        pipeline.deploy(new LocalDeployer());
 
         output.forEach(System.out::println);
     }

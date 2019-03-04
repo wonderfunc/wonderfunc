@@ -1,6 +1,5 @@
 package stream;
 
-import connection.StreamThread;
 import operations.FilterOperation;
 import operations.MapOperation;
 import operations.interfaces.Operation;
@@ -37,12 +36,9 @@ public class Stream<T extends Serializable> {
         return (Stream<R>) this;
     }
 
-    public Thread collectTo(List<T> list) {
+    public Pipeline collectTo(List<T> list) {
         target = new OutputTarget<>(list);
-        Thread streamThread = new Thread(new StreamThread<>(target));
-        streamThread.start();
-        source.relayAll();
-        return streamThread;
+        return new Pipeline<>(operations, target);
     }
 
 }
