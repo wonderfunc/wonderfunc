@@ -16,6 +16,8 @@ public class Main {
 
         Thread thread = stream
                 .collectTo(output);
+
+        output.forEach(System.out::println);
     }
 
     private static List<String> list() {
