@@ -7,5 +7,6 @@ import java.util.List;
 
 public interface WonderDeployer {
 
-    Thread execute(List<Operation> operations, OutputTarget outputTarget);
+    void execute();
+    void deploy(List<Operation> operations, OutputTarget outputTarget);
 }
