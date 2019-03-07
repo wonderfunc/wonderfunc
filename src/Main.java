@@ -19,7 +19,7 @@ public class Main {
         Pipeline pipeline = stream
                 .collectTo(output);
 
-        pipeline.deploy(new LocalDeployer());
+        pipeline.deploy(new LocalDeployer()).execute();
 
         output.forEach(System.out::println);
     }
