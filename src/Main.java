@@ -1,4 +1,4 @@
-import deployers.LocalDeployer;
+import deployers.localdeployer.LocalDeployer;
 import stream.Pipeline;
 import stream.Stream;
 
