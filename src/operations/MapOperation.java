@@ -1,7 +1,7 @@
 package operations;
 
+import message.DataMessage;
 import message.Message;
-import message.MessageType;
 import operations.interfaces.Operation;
 import operations.interfaces.Relay;
 import operations.interfaces.Target;
@@ -30,8 +30,10 @@ public class MapOperation<T extends Serializable, R extends Serializable> implem
     @SuppressWarnings("unchecked")
     @Override
     public void put(Message<T> message) {
-        if (message.type() == MessageType.DATA)
-            relay(new Message<>(function.apply(message.data()), MessageType.DATA));
+        if (message instanceof DataMessage) {
+            DataMessage<T> dataMessage = (DataMessage<T>) message;
+            relay(new DataMessage<>(function.apply(dataMessage.data())));
+        }
         else
             relay((Message<R>)message);
     }

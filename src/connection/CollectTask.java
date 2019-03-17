@@ -1,8 +1,5 @@
 package connection;
 
-import message.Message;
-import message.MessageType;
-
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.net.Socket;

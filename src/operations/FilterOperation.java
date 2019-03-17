@@ -1,7 +1,7 @@
 package operations;
 
+import message.DataMessage;
 import message.Message;
-import message.MessageType;
 import operations.interfaces.Operation;
 import operations.interfaces.Relay;
 import operations.interfaces.Target;
@@ -29,8 +29,9 @@ public class FilterOperation<T extends Serializable> implements Operation<T>, Re
 
     @Override
     public void put(Message<T> message) {
-        if (message.type() == MessageType.DATA) {
-            if (predicate.test(message.data())){
+        if (message instanceof DataMessage) {
+            DataMessage<T> dataMessage = (DataMessage<T>) message;
+            if (predicate.test(dataMessage.data())){
                 relay(message);
             }
         } else {
@@ -55,4 +56,4 @@ public class FilterOperation<T extends Serializable> implements Operation<T>, Re
             e.printStackTrace();
         }
     }
-}
+ }

@@ -1,7 +1,5 @@
 package stream;
 
-import message.Message;
-import message.MessageType;
 import operations.interfaces.Operation;
 import operations.interfaces.Relay;
 import operations.interfaces.Target;
