@@ -1,5 +1,6 @@
 package utils;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
@@ -12,8 +13,16 @@ public class JSONReader {
 
         String json = readJson("/Users/macbookpro/IdeaProjects/DistributedStream/src/data/connectionInformation.json");
 
-        JSONObject obj = new JSONObject(json);
-        return obj.getString(key);
+        JSONObject obj;
+        String result = "";
+        try {
+            obj = new JSONObject(json);
+            result = obj.getString(key);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        return result;
 
     }
 
