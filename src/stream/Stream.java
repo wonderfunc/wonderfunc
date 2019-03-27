@@ -2,9 +2,11 @@ package stream;
 
 import containers.LambdaContainer;
 import containers.LocalLambdaContainer;
-import operations.FilterOperation;
-import operations.MapOperation;
-import operations.interfaces.Operation;
+import nodes.interfaces.CollectNode;
+import nodes.SourceNode;
+import nodes.interfaces.FilterNode;
+import nodes.interfaces.MapNode;
+import nodes.interfaces.Node;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -13,36 +15,35 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 
 public class Stream<T extends Serializable> {
-    private Source source;
-    private List<Operation> operations = new ArrayList<>();
-    private OutputTarget<T> target;
+    private List<Node> nodes = new ArrayList<>();
     private LambdaContainer lambdaContainer;
 
     public Stream(List<T> list) {
-        this.source = new Source<>(list);
-        operations.add(source);
+        nodes.add(new SourceNode(list));
         this.lambdaContainer = new LocalLambdaContainer();
     }
 
-    @SuppressWarnings("unchecked")
     public Stream<T> filter(Predicate<T> predicate) {
-        FilterOperation<T> nextOperation = new FilterOperation<>(predicate);
-        operations.get(operations.size() - 1).next(nextOperation);
-        operations.add(nextOperation);
+        FilterNode<T> node = lambdaContainer.getFilterNodeFrom(predicate);
+        nodes.get(nodes.size() - 1).next(node);
+        nodes.add(node);
         return this;
     }
 
     @SuppressWarnings("unchecked")
     public <R extends Serializable> Stream<R> map(Function<T, R> function) {
-        MapOperation<T, R> nextOperation = new MapOperation<>(function);
-        operations.get(operations.size() - 1).next(nextOperation);
-        operations.add(nextOperation);
+        MapNode<T, R> node = lambdaContainer.getMapNodeFrom(function);
+        nodes.get(nodes.size() - 1).next(node);
+        nodes.add(node);
         return (Stream<R>) this;
     }
 
     public Pipeline collectTo(List<T> list) {
-        target = new OutputTarget<>(list);
-        return new Pipeline<>(operations, target);
+        CollectNode<T> node = lambdaContainer.getCollectNode(new OutputTarget<>(list));
+        nodes.get(nodes.size() - 1).next(node);
+        //nodes.add(node);
+
+        return new Pipeline<>(nodes);
     }
 
     public Stream<T> on(LambdaContainer lambdaContainer) {

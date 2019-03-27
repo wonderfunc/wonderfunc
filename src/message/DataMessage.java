@@ -2,7 +2,7 @@ package message;
 
 import java.io.Serializable;
 
-public class DataMessage<T extends Serializable> implements Message {
+public class DataMessage<T extends Serializable> implements Message<T> {
 
     private final T data;
 
