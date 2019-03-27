@@ -1,6 +1,6 @@
 package repositories;
 
-public class Algorithmia extends Repository {
+public class Algorithmia implements Repository {
     public Algorithmia(String clientId) {
         super();
     }
