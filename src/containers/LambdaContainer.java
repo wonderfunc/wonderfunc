@@ -2,7 +2,7 @@ package containers;
 
 import nodes.interfaces.CollectNode;
 import nodes.interfaces.FilterNode;
-import nodes.interfaces.MapNode;
+import nodes.interfaces.SynchronousMapNode;
 import stream.OutputTarget;
 
 import java.util.function.Function;
@@ -10,9 +10,9 @@ import java.util.function.Predicate;
 
 public interface LambdaContainer {
 
-    FilterNode getFilterNodeFrom(Predicate predicate);
+    FilterNode createNodeFor(Predicate predicate);
 
-    MapNode getMapNodeFrom(Function function);
+    SynchronousMapNode createNodeFor(Function function);
 
-    CollectNode getCollectNode(OutputTarget outputTarget);
+    CollectNode createNodeFor(OutputTarget outputTarget);
 }

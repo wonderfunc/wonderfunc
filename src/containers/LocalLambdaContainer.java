@@ -11,17 +11,17 @@ import java.util.function.Predicate;
 
 public class LocalLambdaContainer implements LambdaContainer {
     @Override
-    public LocalFilterNode getFilterNodeFrom(Predicate predicate) {
+    public LocalFilterNode createNodeFor(Predicate predicate) {
         return new LocalFilterNode<>(predicate);
     }
 
     @Override
-    public LocalMapNode getMapNodeFrom(Function function) {
+    public LocalMapNode createNodeFor(Function function) {
         return new LocalMapNode<>(function);
     }
 
     @Override
-    public CollectNode getCollectNode(OutputTarget outputTarget) {
+    public CollectNode createNodeFor(OutputTarget outputTarget) {
         return new LocalCollectNode(outputTarget);
     }
 }

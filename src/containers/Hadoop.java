@@ -2,7 +2,7 @@ package containers;
 
 import nodes.interfaces.CollectNode;
 import nodes.interfaces.FilterNode;
-import nodes.interfaces.MapNode;
+import nodes.interfaces.SynchronousMapNode;
 import stream.OutputTarget;
 
 import java.util.function.Function;
@@ -15,17 +15,17 @@ public class Hadoop implements LambdaContainer {
     }
 
     @Override
-    public FilterNode getFilterNodeFrom(Predicate predicate) {
+    public FilterNode createNodeFor(Predicate predicate) {
         return null;
     }
 
     @Override
-    public MapNode getMapNodeFrom(Function function) {
+    public SynchronousMapNode createNodeFor(Function function) {
         return null;
     }
 
     @Override
-    public CollectNode getCollectNode(OutputTarget outputTarget) {
+    public CollectNode createNodeFor(OutputTarget outputTarget) {
         return null;
     }
 }
