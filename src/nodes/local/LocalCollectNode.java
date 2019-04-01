@@ -16,7 +16,7 @@ public class LocalCollectNode<T extends Serializable> implements CollectNode {
     }
 
     @Override
-    public void put(Message message) {
+    public void push(Message message) {
         if (message instanceof DataMessage)
             outputTarget.add(((DataMessage<T>)message).data());
     }

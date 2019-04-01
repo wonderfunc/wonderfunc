@@ -28,7 +28,7 @@ public class LocalFilterNode<T extends Serializable> implements FilterNode<T> {
     }
 
     @Override
-    public void put(Message<T> message) {
+    public void push(Message<T> message) {
         if (isADataMessage(message)) {
             if (test((DataMessage<T>) message)) relay(message);
         } else {
@@ -42,6 +42,6 @@ public class LocalFilterNode<T extends Serializable> implements FilterNode<T> {
 
     @Override
     public void relay(Message<T> message) {
-        target.put(message);
+        target.push(message);
     }
 }

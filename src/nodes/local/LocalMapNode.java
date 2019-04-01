@@ -28,7 +28,7 @@ public class LocalMapNode<T extends Serializable, R extends Serializable> implem
     }
 
     @Override
-    public void put(Message<T> message) {
+    public void push(Message<T> message) {
         if (isADataMessage(message)) {
             relay(apply((DataMessage)message));
         } else {
@@ -38,7 +38,7 @@ public class LocalMapNode<T extends Serializable, R extends Serializable> implem
 
     @Override
     public void relay(Message<R> message) {
-        target.put(message);
+        target.push(message);
     }
 
     private boolean isADataMessage(Message<T> message) {

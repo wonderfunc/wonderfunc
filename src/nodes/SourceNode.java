@@ -17,7 +17,7 @@ public class SourceNode<T extends Serializable> implements Node<T> {
     }
 
     public void relayAll() {
-        for (T inputData : inputList) target.put(new DataMessage<>(inputData));
+        for (T inputData : inputList) target.push(new DataMessage<>(inputData));
     }
 
     @Override
