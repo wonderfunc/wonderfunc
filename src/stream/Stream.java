@@ -16,7 +16,7 @@ import java.util.function.Predicate;
 
 public class Stream<T extends Serializable> {
     private List<Node> nodes = new ArrayList<>();
-    private LambdaContainer lambdaContainer;
+    private LambdaContainer currentLambdaContainer;
 
     public Stream(List<T> list) {
         nodes.add(new SourceNode(list));
@@ -47,7 +47,7 @@ public class Stream<T extends Serializable> {
     }
 
     public Stream<T> on(LambdaContainer lambdaContainer) {
-        this.lambdaContainer = lambdaContainer;
+        currentLambdaContainer = lambdaContainer;
         return this;
     }
 }
