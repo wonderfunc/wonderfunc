@@ -21,9 +21,7 @@ public class JSONReader {
         } catch (JSONException e) {
             e.printStackTrace();
         }
-
         return result;
-
     }
 
     private static String readJson(String jsonPath) {

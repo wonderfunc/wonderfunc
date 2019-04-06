@@ -21,10 +21,9 @@ public class StreamThread<T extends Serializable> implements Runnable {
     public void run() {
         try {
             serverSocket = new ServerSocket(Integer.parseInt(JSONReader.get("collectorPort")));
-            while (true) {
+            while (true)
                 new Thread(new CollectTask(serverSocket.accept(), this))
                         .start();
-            }
         } catch (SocketException ignored){
 
         } catch(IOException e) {
