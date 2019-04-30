@@ -1,8 +1,10 @@
 package containers;
 
+import nodes.interfaces.AsynchronousMapNode;
 import nodes.interfaces.CollectNode;
 import nodes.interfaces.FilterNode;
 import nodes.interfaces.SynchronousMapNode;
+import repositories.AsynchronousFunction;
 import stream.OutputTarget;
 
 import java.util.function.Function;
@@ -21,6 +23,11 @@ public class Hadoop implements LambdaContainer {
 
     @Override
     public SynchronousMapNode createNodeFor(Function function) {
+        return null;
+    }
+
+    @Override
+    public AsynchronousMapNode createNodeFor(AsynchronousFunction function) {
         return null;
     }
 

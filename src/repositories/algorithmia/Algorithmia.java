@@ -3,6 +3,7 @@ package repositories.algorithmia;
 import com.algorithmia.APIException;
 import com.algorithmia.AlgorithmiaClient;
 import com.algorithmia.algo.Algorithm;
+import repositories.AsynchronousFunction;
 import repositories.FunctionRepository;
 
 import static com.algorithmia.Algorithmia.client;

@@ -1,9 +1,10 @@
 import containers.AWS;
 import containers.Hadoop;
 import containers.LambdaContainer;
-import repositories.Algorithmia;
+import containers.LocalLambdaContainer;
+import repositories.FunctionRepository;
+import repositories.algorithmia.Algorithmia;
 import stream.Pipeline;
-import repositories.Repository;
 import stream.Stream;
 
 import java.util.ArrayList;
@@ -18,21 +19,23 @@ public class Main {
 
         LambdaContainer hadoop = new Hadoop("");
         LambdaContainer aws = new AWS("");
-        Repository algorithmia = new Algorithmia("clientId");
+        LambdaContainer local = new LocalLambdaContainer();
+        FunctionRepository algorithmia = new Algorithmia("clientId");
 
-        //diferentes nodos dependiendo del contexto
-        Pipeline pipeline = new Stream<>(list())
-                .on(hadoop)
+        Stream<String> stream = new Stream<>(list());
+
+        Pipeline<Integer> pipeline = stream
+                //.on(hadoop)
                 .filter(e -> e.contains("e"))
                 .map(String::length)
-                .on(aws) //contexto para las functions y predicates en adelante
-                .filter(length -> length > 5)
-                .map(each -> each + 1)
+                //.on(aws) //contexto para las functions y predicates en adelante
+                //.filter(length -> length > 5)
+                //.map(each -> each + 1)
+                .map(algorithmia.create("asdfa")) //repository
                 .collectTo(output);
-                //.map(algorithmia.get("asdfa")) //repository
 
 
-        pipeline.deploy(null).execute();
+        Thread streamThread = pipeline.execute();
 
         output.forEach(System.out::println);
     }
