@@ -1,4 +1,4 @@
-package repositories.algorithmia;
+package repositories;
 
 import java.util.function.Function;
 

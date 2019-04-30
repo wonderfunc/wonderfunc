@@ -1,4 +1,4 @@
-package nodes.algorithmia;
+package repositories;
 
 import nodes.interfaces.AsynchronousMapNode;
 
@@ -18,7 +18,6 @@ public class AsynchronousLambdaRepositoryExecutor implements Runnable {
 
     @Override
     public void run() {
-        String output = function.apply(inputJSON);
-        asynchronousMapNode.relayAll(output);
+        asynchronousMapNode.relayAll(function.apply(inputJSON));
     }
 }
