@@ -1,8 +1,9 @@
-package nodes;
+package node;
 
 import message.DataMessage;
-import nodes.interfaces.Node;
-import nodes.interfaces.Target;
+import message.EndOfStreamMessage;
+import node.interfaces.Node;
+import node.interfaces.Target;
 
 import java.io.Serializable;
 import java.util.List;
@@ -18,6 +19,7 @@ public class SourceNode<T extends Serializable> implements Node<T> {
 
     public void relayAll() {
         for (T inputData : inputList) target.push(new DataMessage<>(inputData));
+        target.push(new EndOfStreamMessage());
     }
 
     @Override

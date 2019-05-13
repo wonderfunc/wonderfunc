@@ -1,9 +1,12 @@
 package containers;
 
-import nodes.interfaces.CollectNode;
-import nodes.local.LocalCollectNode;
-import nodes.local.LocalFilterNode;
-import nodes.local.LocalMapNode;
+import node.AsynchronousMapNode;
+import node.interfaces.CollectNode;
+import node.interfaces.SynchronousMapNode;
+import node.local.LocalCollectNode;
+import node.local.LocalFilterNode;
+import node.local.LocalMapNode;
+import functionRepository.AsynchronousFunction;
 import stream.OutputTarget;
 
 import java.util.function.Function;
@@ -16,8 +19,13 @@ public class LocalLambdaContainer implements LambdaContainer {
     }
 
     @Override
-    public LocalMapNode createNodeFor(Function function) {
+    public SynchronousMapNode createNodeFor(Function function) {
         return new LocalMapNode<>(function);
+    }
+
+    @Override
+    public AsynchronousMapNode createNodeFor(AsynchronousFunction function) {
+        return new AsynchronousMapNode(function);
     }
 
     @Override

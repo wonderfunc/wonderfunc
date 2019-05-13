@@ -1,7 +1,7 @@
 package stream;
 
-import nodes.SourceNode;
-import nodes.interfaces.Node;
+import node.SourceNode;
+import node.interfaces.Node;
 
 import java.io.Serializable;
 import java.util.List;
@@ -17,9 +17,9 @@ public class Pipeline <T extends Serializable> {
 
     public Pipeline<T> deploy() {
         //TODO
-        //should iterate in all nodes and depending on the node type (aws / hadoop)
+        //should iterate in all node and depending on the node type (aws / hadoop)
         //deploy the lambda function inside
-        //In local nodes, no deploy should be done
+        //In local node, no deploy should be done
         return this;
     }
 

@@ -1,14 +1,14 @@
-package nodes.local;
+package node.local;
 
 import message.DataMessage;
 import message.Message;
-import nodes.interfaces.MapNode;
-import nodes.interfaces.Target;
+import node.interfaces.SynchronousMapNode;
+import node.interfaces.Target;
 
 import java.io.Serializable;
 import java.util.function.Function;
 
-public class LocalMapNode<T extends Serializable, R extends Serializable> implements MapNode<T, R> {
+public class LocalMapNode<T extends Serializable, R extends Serializable> implements SynchronousMapNode<T, R> {
 
     private Function<T, R> function;
     private Target<R> target;

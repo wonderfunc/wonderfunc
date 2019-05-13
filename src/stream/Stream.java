@@ -2,9 +2,10 @@ package stream;
 
 import containers.LambdaContainer;
 import containers.LocalLambdaContainer;
-import nodes.interfaces.*;
-import nodes.SourceNode;
-import repositories.algorithmia.AlgorithmiaFunction;
+import node.AsynchronousMapNode;
+import node.interfaces.*;
+import node.SourceNode;
+import functionRepository.AsynchronousFunction;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -27,7 +28,8 @@ public class Stream<T extends Serializable> {
     }
 
     public <R extends Serializable> Stream<R> map(Function<T, R> function) {
-        register(currentLambdaContainer.createNodeFor(function));
+        if (function instanceof AsynchronousFunction) register(currentLambdaContainer.createNodeFor((AsynchronousFunction) function));
+        else register(currentLambdaContainer.createNodeFor(function));
         return (Stream<R>) this;
     }
 
@@ -42,6 +44,11 @@ public class Stream<T extends Serializable> {
     }
 
     private void register(SynchronousMapNode node) {
+        chain(node);
+        append(node);
+    }
+
+    private void register(AsynchronousMapNode node) {
         chain(node);
         append(node);
     }

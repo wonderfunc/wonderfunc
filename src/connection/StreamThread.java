@@ -1,7 +1,6 @@
 package connection;
 
 import stream.OutputTarget;
-import utils.JSONReader;
 
 import java.io.IOException;
 import java.io.Serializable;
@@ -20,7 +19,7 @@ public class StreamThread<T extends Serializable> implements Runnable {
     @Override
     public void run() {
         try {
-            serverSocket = new ServerSocket(Integer.parseInt(JSONReader.get("collectorPort")));
+            serverSocket = new ServerSocket(8080);
             while (true)
                 new Thread(new CollectTask(serverSocket.accept(), this))
                         .start();

@@ -1,9 +1,9 @@
-import containers.AWS;
-import containers.Hadoop;
 import containers.LambdaContainer;
-import repositories.Algorithmia;
+import containers.LocalLambdaContainer;
+import marshall.MarshallableInteger;
+import node.interfaces.FunctionRepository;
+import functionRepository.algorithmia.Algorithmia;
 import stream.Pipeline;
-import repositories.Repository;
 import stream.Stream;
 
 import java.util.ArrayList;
@@ -16,23 +16,19 @@ public class Main {
 
         List<Integer> output = new ArrayList<>();
 
-        LambdaContainer hadoop = new Hadoop("");
-        LambdaContainer aws = new AWS("");
-        Repository algorithmia = new Algorithmia("clientId");
+        LambdaContainer local = new LocalLambdaContainer();
+        FunctionRepository algorithmia = new Algorithmia("sim4SmnjN9o5CRPEKS4QxTJBWLg1");
 
-        //diferentes nodos dependiendo del contexto
-        Pipeline pipeline = new Stream<>(list())
-                .on(hadoop)
-                .filter(e -> e.contains("e"))
+        Stream<String> stream = new Stream<>(list());
+
+        Pipeline<Integer> pipeline = stream
+                .on(local)
                 .map(String::length)
-                .on(aws) //contexto para las functions y predicates en adelante
-                .filter(length -> length > 5)
-                .map(each -> each + 1)
+                .map(algorithmia.create("victcebesp/AsynchronousFunction", MarshallableInteger.class))
                 .collectTo(output);
-                //.map(algorithmia.get("asdfa")) //repository
 
 
-        pipeline.deploy(null).execute();
+        Thread streamThread = pipeline.execute();
 
         output.forEach(System.out::println);
     }
