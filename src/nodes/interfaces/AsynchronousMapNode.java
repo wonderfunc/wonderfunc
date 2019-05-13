@@ -2,27 +2,35 @@ package nodes.interfaces;
 
 import message.DataMessage;
 import message.Message;
-import nodes.algorithmia.AsynchronousLambdaRepositoryExecutor;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+import repositories.AsynchronousFunction;
+import repositories.LambdaRepositoryExecutor;
+import repositories.Listener;
 
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.function.Function;
 
-public abstract class AsynchronousMapNode <T extends Serializable, R extends Serializable> implements Node<R>, Target<T>, Relay<R> {
+public class AsynchronousMapNode <T extends Serializable, R extends Serializable> implements Node<R>, Target<T>, Relay<R>, Listener {
 
     private final int cacheSize;
-    private List<Message<T>> cache;
-    private final Function function;
+    private List<Message<T>> receivedDataMessages;
+    private final AsynchronousFunction function;
     private Target<R> target;
+    private Thread executingThread;
+    private int cachedMessagesAmount;
 
-    public AsynchronousMapNode(Function function, int cacheSize) {
+    public AsynchronousMapNode(AsynchronousFunction function, int cacheSize) {
         this.cacheSize = cacheSize;
         this.function = function;
+        this.receivedDataMessages = new ArrayList<>();
+        this.cachedMessagesAmount = 0;
     }
 
-    public AsynchronousMapNode(Function function) {
-        this(function, 20);
+    public AsynchronousMapNode(AsynchronousFunction function) {
+        this(function, 5);
     }
 
     @Override
@@ -30,6 +38,12 @@ public abstract class AsynchronousMapNode <T extends Serializable, R extends Ser
         if (isADataMessage(message)) {
             pushToCache(message);
         } else {
+            if (thereAreMessagesLeftInCache()) sendAsynchronousBathJob();
+            try {
+                executingThread.join();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
             relay((Message<R>) message);
         }
     }
@@ -44,8 +58,9 @@ public abstract class AsynchronousMapNode <T extends Serializable, R extends Ser
         this.target = target;
     }
 
-    public void relayAll(String output) {
-        deserialize(output).forEach(this::relay);
+    @Override
+    public synchronized void onFinish(String output) {
+        unmarshall(output).forEach(this::relay);
     }
 
     private boolean isADataMessage(Message<T> message) {
@@ -53,23 +68,83 @@ public abstract class AsynchronousMapNode <T extends Serializable, R extends Ser
     }
 
     private void pushToCache(Message<T> message) {
-        if (thereIsSpaceInCache()) cache.add(message);
-        else sendAsynchronousBathJob();
+        cachedMessagesAmount++;
+        receivedDataMessages.add(message);
+        if (!thereIsSpaceInCache()) sendAsynchronousBathJob();
     }
 
     private boolean thereIsSpaceInCache() {
-        return cacheSize > cache.size();
+        return cacheSize > cachedMessagesAmount;
     }
 
     private void sendAsynchronousBathJob() {
-        List<Message> messages = new ArrayList<>(cache);
-        cache = new ArrayList<>();
-        String inputJSON = serialize(messages);
-        new Thread(new AsynchronousLambdaRepositoryExecutor(inputJSON, this, function)).start();
+        if (!thereIsExecutingThreadRunning()) {
+            List<Message<T>> messages = sliceReceivedMessages();
+            cleanCache();
+            String inputJSON = marshall(messages);
+            executingThread = new Thread(new LambdaRepositoryExecutor(inputJSON, function).addOnFinishListener(this));
+            executingThread.start();
+            try {
+                executingThread.join();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
-    protected abstract String serialize(List<Message> messages);
+    private boolean thereIsExecutingThreadRunning() {
+        return executingThread != null && executingThread.isAlive();
+    }
 
-    protected abstract List<Message> deserialize(String output);
+    private List<Message<T>> sliceReceivedMessages() {
+        List<Message<T>> messages = receivedDataMessages.subList(0, cachedMessagesAmount);
+        receivedDataMessages = receivedDataMessages.subList(cachedMessagesAmount, receivedDataMessages.size());
+        return messages;
+    }
+
+    private void cleanCache() {
+        cachedMessagesAmount = 0;
+    }
+
+    private String marshall(List list) {
+
+        JSONArray messagesData = new JSONArray();
+        for (Object each : list) {
+            final String marshall = function.marshall(((DataMessage) each).data());
+            messagesData.put(marshall);
+        }
+
+        JSONObject json = new JSONObject();
+        try {
+            json.put("data", messagesData);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return json.toString();
+
+    }
+
+    private boolean thereAreMessagesLeftInCache() {
+        return cachedMessagesAmount > 0;
+    }
+
+    private List<Message> unmarshall(String output) {
+        List<Message> deserializeMessages = new ArrayList<>();
+        JSONObject json;
+        try {
+            json = new JSONObject(fixOutputString(output));
+            JSONArray data = json.getJSONArray("data");
+            for (int i = 0; i < data.length(); i++)
+                deserializeMessages.add(new DataMessage(function.unmarshall((String)data.get(i))));
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return deserializeMessages;
+    }
+
+    private String fixOutputString(String output) {
+        return output.substring(1, output.length() - 1).replace("\\\"", "\"");
+    }
+
 
 }

@@ -1,5 +1,3 @@
-import containers.AWS;
-import containers.Hadoop;
 import containers.LambdaContainer;
 import containers.LocalLambdaContainer;
 import repositories.FunctionRepository;
@@ -13,25 +11,22 @@ import java.util.List;
 
 public class Main {
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws InterruptedException {
 
         List<Integer> output = new ArrayList<>();
 
-        LambdaContainer hadoop = new Hadoop("");
-        LambdaContainer aws = new AWS("");
         LambdaContainer local = new LocalLambdaContainer();
-        FunctionRepository algorithmia = new Algorithmia("clientId");
+        FunctionRepository algorithmia = new Algorithmia("sim4SmnjN9o5CRPEKS4QxTJBWLg1");
 
         Stream<String> stream = new Stream<>(list());
 
         Pipeline<Integer> pipeline = stream
-                //.on(hadoop)
-                .filter(e -> e.contains("e"))
+                .on(local)
                 .map(String::length)
                 //.on(aws) //contexto para las functions y predicates en adelante
                 //.filter(length -> length > 5)
                 //.map(each -> each + 1)
-                .map(algorithmia.create("asdfa")) //repository
+                .map(algorithmia.create("victcebesp/AsynchronousFunction")) //repository
                 .collectTo(output);
 
 

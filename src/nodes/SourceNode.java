@@ -1,6 +1,7 @@
 package nodes;
 
 import message.DataMessage;
+import message.EndOfStreamMessage;
 import nodes.interfaces.Node;
 import nodes.interfaces.Target;
 
@@ -18,6 +19,7 @@ public class SourceNode<T extends Serializable> implements Node<T> {
 
     public void relayAll() {
         for (T inputData : inputList) target.push(new DataMessage<>(inputData));
+        target.push(new EndOfStreamMessage());
     }
 
     @Override

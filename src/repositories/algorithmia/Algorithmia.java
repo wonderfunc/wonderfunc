@@ -1,6 +1,7 @@
 package repositories.algorithmia;
 
 import com.algorithmia.APIException;
+import com.algorithmia.AlgorithmException;
 import com.algorithmia.AlgorithmiaClient;
 import com.algorithmia.algo.Algorithm;
 import repositories.AsynchronousFunction;
@@ -22,14 +23,28 @@ public class Algorithmia implements FunctionRepository {
     }
 
     private AsynchronousFunction functionOf(Algorithm algorithm) {
-        return s -> {
-            String result = "";
-            try {
-                result = algorithm.pipe(s).toString();
-            } catch (APIException e) {
-                e.printStackTrace();
+        return new AsynchronousFunction<Integer>() {
+            @Override
+            synchronized public String marshall(Integer messageData) {
+                return messageData.toString();
             }
-            return result;
+
+            @Override
+            synchronized public Integer unmarshall(String messageData) {
+                return Integer.parseInt(messageData);
+            }
+
+            @Override
+            public Object apply(Object o) {
+
+                String result = "";
+                try {
+                    result = algorithm.pipe(o).asJsonString();
+                } catch (APIException | AlgorithmException e) {
+                    e.printStackTrace();
+                }
+                return result;
+            }
         };
     }
 
