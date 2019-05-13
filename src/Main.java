@@ -1,7 +1,8 @@
 import containers.LambdaContainer;
 import containers.LocalLambdaContainer;
-import repositories.FunctionRepository;
-import repositories.algorithmia.Algorithmia;
+import marshall.MarshallableInteger;
+import node.interfaces.FunctionRepository;
+import functionRepository.algorithmia.Algorithmia;
 import stream.Pipeline;
 import stream.Stream;
 
@@ -11,7 +12,7 @@ import java.util.List;
 
 public class Main {
 
-    public static void main(String[] args) throws InterruptedException {
+    public static void main(String[] args) {
 
         List<Integer> output = new ArrayList<>();
 
@@ -23,10 +24,7 @@ public class Main {
         Pipeline<Integer> pipeline = stream
                 .on(local)
                 .map(String::length)
-                //.on(aws) //contexto para las functions y predicates en adelante
-                //.filter(length -> length > 5)
-                //.map(each -> each + 1)
-                .map(algorithmia.create("victcebesp/AsynchronousFunction")) //repository
+                .map(algorithmia.create("victcebesp/AsynchronousFunction", MarshallableInteger.class))
                 .collectTo(output);
 
 

@@ -2,10 +2,10 @@ package stream;
 
 import containers.LambdaContainer;
 import containers.LocalLambdaContainer;
-import nodes.interfaces.*;
-import nodes.SourceNode;
-import repositories.AsynchronousFunction;
-import repositories.algorithmia.AlgorithmiaFunction;
+import node.AsynchronousMapNode;
+import node.interfaces.*;
+import node.SourceNode;
+import functionRepository.AsynchronousFunction;
 
 import java.io.Serializable;
 import java.util.ArrayList;

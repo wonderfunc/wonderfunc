@@ -1,8 +1,8 @@
-package nodes.local;
+package node.local;
 
 import message.DataMessage;
 import message.Message;
-import nodes.interfaces.CollectNode;
+import node.interfaces.CollectNode;
 import stream.OutputTarget;
 
 import java.io.Serializable;

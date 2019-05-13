@@ -1,9 +1,9 @@
-package nodes;
+package node;
 
 import message.DataMessage;
 import message.EndOfStreamMessage;
-import nodes.interfaces.Node;
-import nodes.interfaces.Target;
+import node.interfaces.Node;
+import node.interfaces.Target;
 
 import java.io.Serializable;
 import java.util.List;

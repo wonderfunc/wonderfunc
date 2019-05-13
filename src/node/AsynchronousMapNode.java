@@ -1,13 +1,16 @@
-package nodes.interfaces;
+package node;
 
+import functionRepository.AsynchronousFunction;
 import message.DataMessage;
 import message.Message;
+import node.interfaces.Listener;
+import node.interfaces.Node;
+import node.interfaces.Relay;
+import node.interfaces.Target;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import repositories.AsynchronousFunction;
-import repositories.LambdaRepositoryExecutor;
-import repositories.Listener;
+import functionRepository.LambdaRepositoryExecutor;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -110,7 +113,8 @@ public class AsynchronousMapNode <T extends Serializable, R extends Serializable
 
         JSONArray messagesData = new JSONArray();
         for (Object each : list) {
-            final String marshall = function.marshall(((DataMessage) each).data());
+            final String marshall;
+            marshall = function.marshallable().marshall(((DataMessage) each).data());
             messagesData.put(marshall);
         }
 
@@ -135,7 +139,7 @@ public class AsynchronousMapNode <T extends Serializable, R extends Serializable
             json = new JSONObject(fixOutputString(output));
             JSONArray data = json.getJSONArray("data");
             for (int i = 0; i < data.length(); i++)
-                deserializeMessages.add(new DataMessage(function.unmarshall((String)data.get(i))));
+                deserializeMessages.add(new DataMessage(function.marshallable().unmarshall((String)data.get(i))));
         } catch (JSONException e) {
             e.printStackTrace();
         }

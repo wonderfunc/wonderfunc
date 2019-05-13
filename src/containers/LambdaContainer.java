@@ -1,10 +1,10 @@
 package containers;
 
-import nodes.interfaces.AsynchronousMapNode;
-import nodes.interfaces.CollectNode;
-import nodes.interfaces.FilterNode;
-import nodes.interfaces.SynchronousMapNode;
-import repositories.AsynchronousFunction;
+import node.AsynchronousMapNode;
+import node.interfaces.CollectNode;
+import node.interfaces.FilterNode;
+import node.interfaces.SynchronousMapNode;
+import functionRepository.AsynchronousFunction;
 import stream.OutputTarget;
 
 import java.util.function.Function;
