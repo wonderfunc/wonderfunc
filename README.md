@@ -1,6 +1,6 @@
 # Wonderfunc
 
-This project has been developed with [Tomás Denis Reyes Sánchez](https://github.com/toderesa97), directed by José Juan Hernández Cabrera from SIANI (Las Palmas of Gran Canaria) and supported by Jose Évora Gómez from Monentia (Las Palmas of Gran Canaria).
+This project has been developed directed by José Juan Hernández Cabrera from SIANI (Las Palmas of Gran Canaria) and supported by Jose Évora Gómez (Las Palmas of Gran Canaria).
 
 Wonderfunc is a distributed stream based on JAVA Stream API. The main difference is that Wonderfunc instead of being executed in a local machine, it's executed in a distributed environment.
 
@@ -92,8 +92,6 @@ public class Main() {
 ### Deployers
 
 ## Collaborators
-
-[Tomás Denis Reyes Sánchez](https://github.com/toderesa97)
 
 José Juan Hernández Cabrera
 
