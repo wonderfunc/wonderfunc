@@ -2,10 +2,10 @@ package stream;
 
 import containers.LambdaContainer;
 import containers.LocalLambdaContainer;
-import node.AsynchronousMapNode;
+import functionRepository.algorithmia.AlgorithmiaAsynchronousFunction;
+import node.local.LocalAsynchronousMapNode;
 import node.interfaces.*;
-import node.SourceNode;
-import functionRepository.AsynchronousFunction;
+import node.local.LocalSourceNode;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -18,7 +18,7 @@ public class Stream<T extends Serializable> {
     private LambdaContainer currentLambdaContainer;
 
     public Stream(List<T> list) {
-        this.nodes.add(new SourceNode(list));
+        this.nodes.add(new LocalSourceNode(list));
         this.currentLambdaContainer = new LocalLambdaContainer();
     }
 
@@ -28,7 +28,7 @@ public class Stream<T extends Serializable> {
     }
 
     public <R extends Serializable> Stream<R> map(Function<T, R> function) {
-        if (function instanceof AsynchronousFunction) register(currentLambdaContainer.createNodeFor((AsynchronousFunction) function));
+        if (function instanceof AlgorithmiaAsynchronousFunction) register(currentLambdaContainer.createNodeFor((AlgorithmiaAsynchronousFunction) function));
         else register(currentLambdaContainer.createNodeFor(function));
         return (Stream<R>) this;
     }
@@ -48,7 +48,7 @@ public class Stream<T extends Serializable> {
         append(node);
     }
 
-    private void register(AsynchronousMapNode node) {
+    private void register(LocalAsynchronousMapNode node) {
         chain(node);
         append(node);
     }
