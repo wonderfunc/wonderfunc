@@ -1,38 +1,36 @@
-package node;
+package node.local;
 
-import functionRepository.AsynchronousFunction;
+import functionRepository.algorithmia.AlgorithmiaAsynchronousFunction;
+import functionRepository.LambdaRepositoryExecutor;
+import functionRepository.interfaces.Listener;
 import message.DataMessage;
 import message.Message;
-import node.interfaces.Listener;
-import node.interfaces.Node;
-import node.interfaces.Relay;
+import node.interfaces.AsynchronousMapNode;
 import node.interfaces.Target;
 import org.json.JSONArray;
 import org.json.JSONException;
-import org.json.JSONObject;
-import functionRepository.LambdaRepositoryExecutor;
 
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class AsynchronousMapNode <T extends Serializable, R extends Serializable> implements Node<R>, Target<T>, Relay<R>, Listener {
+public class LocalAsynchronousMapNode<T extends Serializable, R extends Serializable> implements AsynchronousMapNode<T, R>, Listener {
 
     private final int cacheSize;
     private List<Message<T>> receivedDataMessages;
-    private final AsynchronousFunction function;
+    private final AlgorithmiaAsynchronousFunction function;
     private Target<R> target;
     private Thread executingThread;
     private int cachedMessagesAmount;
 
-    public AsynchronousMapNode(AsynchronousFunction function, int cacheSize) {
+    public LocalAsynchronousMapNode(AlgorithmiaAsynchronousFunction function, int cacheSize) {
         this.cacheSize = cacheSize;
         this.function = function;
         this.receivedDataMessages = new ArrayList<>();
         this.cachedMessagesAmount = 0;
     }
 
-    public AsynchronousMapNode(AsynchronousFunction function) {
+    public LocalAsynchronousMapNode(AlgorithmiaAsynchronousFunction function) {
         this(function, 5);
     }
 
@@ -112,19 +110,11 @@ public class AsynchronousMapNode <T extends Serializable, R extends Serializable
     private String marshall(List list) {
 
         JSONArray messagesData = new JSONArray();
-        for (Object each : list) {
-            final String marshall;
-            marshall = function.marshallable().marshall(((DataMessage) each).data());
-            messagesData.put(marshall);
-        }
 
-        JSONObject json = new JSONObject();
-        try {
-            json.put("data", messagesData);
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-        return json.toString();
+        for (Object each : list)
+            messagesData.put(function.marshallable().marshall(((DataMessage) each).data()));
+
+        return messagesData.toString();
 
     }
 
@@ -134,21 +124,15 @@ public class AsynchronousMapNode <T extends Serializable, R extends Serializable
 
     private List<Message> unmarshall(String output) {
         List<Message> deserializeMessages = new ArrayList<>();
-        JSONObject json;
+        JSONArray jsonArray;
         try {
-            json = new JSONObject(fixOutputString(output));
-            JSONArray data = json.getJSONArray("data");
-            for (int i = 0; i < data.length(); i++)
-                deserializeMessages.add(new DataMessage(function.marshallable().unmarshall((String)data.get(i))));
+            jsonArray = new JSONArray(output);
+            for (int i = 0; i < jsonArray.length(); i++)
+                deserializeMessages.add(new DataMessage(function.marshallable().unmarshall(jsonArray.getString(i))));
         } catch (JSONException e) {
             e.printStackTrace();
         }
         return deserializeMessages;
     }
-
-    private String fixOutputString(String output) {
-        return output.substring(1, output.length() - 1).replace("\\\"", "\"");
-    }
-
 
 }

@@ -1,4 +1,4 @@
-package functionRepository;
+package functionRepository.algorithmia;
 
 import com.algorithmia.APIException;
 import com.algorithmia.AlgorithmException;
@@ -8,14 +8,14 @@ import marshall.Marshallable;
 import java.io.Serializable;
 import java.util.function.Function;
 
-public class AsynchronousFunction <T extends Serializable> implements Function {
+public class AlgorithmiaAsynchronousFunction<T extends Serializable> implements Function {
 
     private final Marshallable<T> marshallable;
     private final Algorithm algorithm;
 
-    public AsynchronousFunction(Algorithm algorithm, Class marshableClass) {
+    public AlgorithmiaAsynchronousFunction(Algorithm algorithm, Class marshableClass) {
         this.algorithm = algorithm;
-        this.marshallable = instantiateMarshable(marshableClass);
+        this.marshallable = instantiateMarshallable(marshableClass);
     }
 
     @Override
@@ -23,7 +23,7 @@ public class AsynchronousFunction <T extends Serializable> implements Function {
 
         String result = "";
         try {
-            result = algorithm.pipe(o).asJsonString();
+            result = algorithm.pipe(o).asString();
         } catch (APIException | AlgorithmException e) {
             e.printStackTrace();
         }
@@ -34,7 +34,7 @@ public class AsynchronousFunction <T extends Serializable> implements Function {
         return marshallable;
     }
 
-    private Marshallable<T> instantiateMarshable(Class marshallableClass)  {
+    private Marshallable<T> instantiateMarshallable(Class marshallableClass)  {
         Marshallable marshallable = null;
         try {
             marshallable = (Marshallable<T>)marshallableClass.newInstance();

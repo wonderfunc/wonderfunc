@@ -1,10 +1,10 @@
 package containers;
 
-import node.AsynchronousMapNode;
+import node.local.LocalAsynchronousMapNode;
 import node.interfaces.CollectNode;
 import node.interfaces.FilterNode;
 import node.interfaces.SynchronousMapNode;
-import functionRepository.AsynchronousFunction;
+import functionRepository.algorithmia.AlgorithmiaAsynchronousFunction;
 import stream.OutputTarget;
 
 import java.util.function.Function;
@@ -16,7 +16,7 @@ public interface LambdaContainer {
 
     SynchronousMapNode createNodeFor(Function function);
 
-    AsynchronousMapNode createNodeFor(AsynchronousFunction function);
+    LocalAsynchronousMapNode createNodeFor(AlgorithmiaAsynchronousFunction function);
 
     CollectNode createNodeFor(OutputTarget outputTarget);
 }

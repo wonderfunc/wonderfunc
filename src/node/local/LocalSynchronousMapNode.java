@@ -8,12 +8,12 @@ import node.interfaces.Target;
 import java.io.Serializable;
 import java.util.function.Function;
 
-public class LocalMapNode<T extends Serializable, R extends Serializable> implements SynchronousMapNode<T, R> {
+public class LocalSynchronousMapNode<T extends Serializable, R extends Serializable> implements SynchronousMapNode<T, R> {
 
     private Function<T, R> function;
     private Target<R> target;
 
-    public LocalMapNode(Function<T, R> function) {
+    public LocalSynchronousMapNode(Function<T, R> function) {
         this.function = function;
     }
 

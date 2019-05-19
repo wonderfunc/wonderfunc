@@ -1,14 +1,14 @@
 package thread;
 
-import node.SourceNode;
+import node.local.LocalSourceNode;
 
 import java.io.Serializable;
 
 public class PipelineThread<T extends Serializable> implements Runnable {
 
-    private final SourceNode sourceNode;
+    private final LocalSourceNode sourceNode;
 
-    public PipelineThread(SourceNode sourceNode) {
+    public PipelineThread(LocalSourceNode sourceNode) {
         this.sourceNode = sourceNode;
     }
 
