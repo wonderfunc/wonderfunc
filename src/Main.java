@@ -1,9 +1,8 @@
 import containers.LambdaContainer;
 import containers.LocalLambdaContainer;
-import marshall.MarshallableComment;
-import marshall.MarshallableInteger;
-import functionRepository.interfaces.FunctionRepository;
 import functionRepository.algorithmia.Algorithmia;
+import functionRepository.interfaces.FunctionRepository;
+import marshall.MarshallableComment;
 import stream.Pipeline;
 import stream.Stream;
 
@@ -15,32 +14,8 @@ public class Main {
 
     public static void main(String[] args) throws InterruptedException {
 
-        pipelineWithAlgorithmia();
         //pipelineWithoutAlgorithmia();
-    }
-
-    private static void pipelineWithAlgorithmia() throws InterruptedException {
-        List<Integer> output = new ArrayList<>();
-
-        LambdaContainer local = new LocalLambdaContainer();
-        FunctionRepository algorithmia = new Algorithmia("sim4SmnjN9o5CRPEKS4QxTJBWLg1");
-
-        Stream<String> stream = new Stream<>(list());
-
-        Pipeline<Integer> pipeline = stream
-                .on(local)
-                .map(String::length)
-                .map(algorithmia.create("victcebesp/AsynchronousFunction", MarshallableInteger.class))
-                .collectTo(output);
-
-        System.out.println("created");
-
-        Thread pipelineThread = pipeline.execute();
-
-        pipelineThread.join();
-
-        output.forEach(System.out::println);
-
+        useCase();
     }
 
     private static void pipelineWithoutAlgorithmia() throws InterruptedException {
