@@ -23,7 +23,7 @@ public class AlgorithmiaAsynchronousFunction<T extends Serializable> implements 
 
         String result = "";
         try {
-            result = algorithm.pipe(o).asString();
+            result = algorithm.pipeJson((String)o).asJsonString();
         } catch (APIException | AlgorithmException e) {
             e.printStackTrace();
         }

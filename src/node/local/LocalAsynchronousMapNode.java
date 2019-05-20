@@ -109,12 +109,13 @@ public class LocalAsynchronousMapNode<T extends Serializable, R extends Serializ
 
     private String marshall(List list) {
 
-        JSONArray messagesData = new JSONArray();
+        StringBuilder marshalledMessages = new StringBuilder("[");
 
         for (Object each : list)
-            messagesData.put(function.marshallable().marshall(((DataMessage) each).data()));
+            marshalledMessages.append(function.marshallable().marshall(((DataMessage) each).data()))
+                              .append(",");
 
-        return messagesData.toString();
+        return marshalledMessages.substring(0, marshalledMessages.length() - 1) + "]";
 
     }
 
