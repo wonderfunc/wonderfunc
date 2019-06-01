@@ -1,10 +1,13 @@
 package stream;
 
-import containers.LambdaContainer;
-import containers.LocalLambdaContainer;
-import nodes.interfaces.*;
-import nodes.SourceNode;
-import repositories.algorithmia.AlgorithmiaFunction;
+import containers.LocalNodeContainer;
+import containers.NodeContainer;
+import expressionExecutor.interfaces.ExpressionExecutor;
+import node.interfaces.FilterNode;
+import node.interfaces.MapNode;
+import node.interfaces.Node;
+import node.interfaces.Target;
+import node.local.LocalSourceNode;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -14,25 +17,25 @@ import java.util.function.Predicate;
 
 public class Stream<T extends Serializable> {
     private List<Node> nodes = new ArrayList<>();
-    private LambdaContainer currentLambdaContainer;
+    private NodeContainer currentNodeContainer;
 
     public Stream(List<T> list) {
-        this.nodes.add(new SourceNode(list));
-        this.currentLambdaContainer = new LocalLambdaContainer();
+        this.nodes.add(new LocalSourceNode(list));
+        this.currentNodeContainer = new LocalNodeContainer();
     }
 
     public Stream<T> filter(Predicate<T> predicate) {
-        register(currentLambdaContainer.createNodeFor(predicate));
+        register(currentNodeContainer.createNodeFor(predicate));
         return this;
     }
 
     public <R extends Serializable> Stream<R> map(Function<T, R> function) {
-        register(currentLambdaContainer.createNodeFor(function));
+        register(currentNodeContainer.createNodeFor(function));
         return (Stream<R>) this;
     }
 
     public Pipeline collectTo(List<T> list) {
-        chain(currentLambdaContainer.createNodeFor(outputOf(list)));
+        chain(currentNodeContainer.createNodeFor(outputOf(list)));
         return new Pipeline<>(nodes);
     }
 
@@ -41,7 +44,7 @@ public class Stream<T extends Serializable> {
         append(node);
     }
 
-    private void register(SynchronousMapNode node) {
+    private void register(MapNode node) {
         chain(node);
         append(node);
     }
@@ -62,8 +65,18 @@ public class Stream<T extends Serializable> {
         return new OutputTarget<>(list);
     }
 
-    public Stream<T> on(LambdaContainer lambdaContainer) {
-        currentLambdaContainer = lambdaContainer;
+    public Stream<T> on(NodeContainer nodeContainer) {
+        currentNodeContainer = nodeContainer;
         return this;
     }
+
+    public <R extends Serializable> Stream<R> with(ExpressionExecutor<T, R> expressionExecutor) {
+        Node lastNode = nodes.get(nodes.size() - 1);
+        if (lastNode instanceof MapNode) {
+            MapNode mapNode = (MapNode) lastNode;
+            mapNode.setExpressionExecutor(expressionExecutor.function(mapNode.function()));
+        }
+        return (Stream<R>)this;
+    }
+
 }

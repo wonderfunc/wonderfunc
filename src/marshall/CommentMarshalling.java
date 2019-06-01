@@ -1,15 +1,14 @@
 package marshall;
 
-import java.io.Serializable;
+public class CommentMarshalling implements Marshalling<String, Double> {
 
-public class MarshallableComment implements Marshallable {
     @Override
-    public String marshall(Serializable messageData) {
+    public String marshall(String messageData) {
         return "{\"document\": \"" + messageData + "\"}";
     }
 
     @Override
-    public Serializable unmarshall(String output) {
+    public Double unmarshall(String output) {
         return Double.parseDouble(output.substring(output.indexOf(":") + 1, output.indexOf(",")));
     }
 }

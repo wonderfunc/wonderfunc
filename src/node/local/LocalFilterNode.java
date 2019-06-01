@@ -1,9 +1,9 @@
-package nodes.local;
+package node.local;
 
 import message.DataMessage;
 import message.Message;
-import nodes.interfaces.FilterNode;
-import nodes.interfaces.Target;
+import node.interfaces.FilterNode;
+import node.interfaces.Target;
 
 import java.io.Serializable;
 import java.util.function.Predicate;

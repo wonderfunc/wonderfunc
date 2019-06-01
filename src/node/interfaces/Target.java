@@ -1,4 +1,4 @@
-package nodes.interfaces;
+package node.interfaces;
 
 import message.Message;
 

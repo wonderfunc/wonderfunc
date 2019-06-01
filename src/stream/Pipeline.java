@@ -1,7 +1,7 @@
 package stream;
 
-import nodes.SourceNode;
-import nodes.interfaces.Node;
+import node.local.LocalSourceNode;
+import node.interfaces.Node;
 import thread.PipelineThread;
 
 import java.io.Serializable;
@@ -16,7 +16,7 @@ public class Pipeline <T extends Serializable> {
     }
 
     public Thread execute() {
-        Thread pipelineThread = new Thread(new PipelineThread<>((SourceNode) nodes.get(0)));
+        Thread pipelineThread = new Thread(new PipelineThread<>((LocalSourceNode) nodes.get(0)));
         pipelineThread.start();
         return pipelineThread;
     }
