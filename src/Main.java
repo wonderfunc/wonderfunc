@@ -1,14 +1,16 @@
-import containers.LambdaContainer;
-import containers.LocalLambdaContainer;
+import containers.LocalNodeContainer;
+import containers.NodeContainer;
+import expressionExecutor.RemoteExpressionExecutor;
 import functionRepository.algorithmia.Algorithmia;
 import functionRepository.interfaces.FunctionRepository;
-import marshall.MarshallableComment;
+import marshall.CommentMarshalling;
 import stream.Pipeline;
 import stream.Stream;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.function.Function;
 
 public class Main {
 
@@ -21,14 +23,14 @@ public class Main {
     private static void pipelineWithoutAlgorithmia() throws InterruptedException {
         List<Integer> output = new ArrayList<>();
 
-        LambdaContainer local = new LocalLambdaContainer();
+        NodeContainer local = new LocalNodeContainer();
 
         Stream<String> stream = new Stream<>(list());
 
         Pipeline<Integer> pipeline = stream
                 .on(local)
-                .filter(s -> s.contains("i"))
-                .map(String::length)
+                    .filter(s -> s.contains("y"))
+                    .map(String::length)
                 .collectTo(output);
 
 
@@ -39,34 +41,33 @@ public class Main {
         output.forEach(System.out::println);
     }
 
+    @SuppressWarnings({"Convert2MethodRef", "FunctionalExpressionCanBeFolded"})
     private static void useCase() throws InterruptedException {
         List<Boolean> output = new ArrayList<>();
 
-        LambdaContainer local = new LocalLambdaContainer();
         FunctionRepository algorithmia = new Algorithmia("sim4SmnjN9o5CRPEKS4QxTJBWLg1");
 
-        Stream<String> stream = new Stream<>(comments());
+        Function<String, String> sentimentAnalysis = algorithmia.function("nlp/SentimentAnalysis/1.0.5");
+
+        Stream<String> stream = new Stream<>(list());
 
         Pipeline<Integer> pipeline = stream
-                .on(local)
-                .map(algorithmia.create("nlp/SentimentAnalysis/1.0.5", MarshallableComment.class))
-                .map(d -> (Double) d <= 0)
+                .on(new LocalNodeContainer())
+                    .map(s -> sentimentAnalysis.apply(s))
+                        .with(new RemoteExpressionExecutor(new CommentMarshalling()))
+                    .map(d -> d <= 0)
                 .collectTo(output);
 
         Thread pipelineThread = pipeline.execute();
 
         pipelineThread.join();
 
-        for (int i = 0; i < output.size(); i++) if (output.get(i)) System.out.println(comments().get(i));
+        for (int i = 0; i < output.size(); i++) if (output.get(i)) System.out.println(list().get(i));
 
         System.exit(0);
     }
 
     private static List<String> list() {
-        return Arrays.asList("Hello this is a prove to check if everything went correctly".split(" "));
-    }
-
-    private static List<String> comments() {
         return Arrays.asList("I hate it!",
                 "I really like the final design. It is very ergonomic",
                 "This product doesn't work at all...",

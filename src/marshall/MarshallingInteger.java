@@ -1,6 +1,6 @@
 package marshall;
 
-public class MarshallableInteger implements Marshallable<Integer> {
+public class MarshallingInteger implements Marshalling<Integer, Integer> {
 
     @Override
     public String marshall(Integer messageData) {

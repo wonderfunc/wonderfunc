@@ -1,8 +1,10 @@
 package functionRepository.interfaces;
 
-import marshall.Marshallable;
-import functionRepository.algorithmia.AlgorithmiaAsynchronousFunction;
+import marshall.Marshalling;
+
+import java.io.Serializable;
+import java.util.function.Function;
 
 public interface FunctionRepository {
-    <T extends Marshallable> AlgorithmiaAsynchronousFunction create(String functionID, Class<T> marshable);
+    <T extends Serializable, O extends Serializable> Function<T, O> function(String functionID);
 }

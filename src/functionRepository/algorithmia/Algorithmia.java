@@ -3,6 +3,9 @@ package functionRepository.algorithmia;
 import com.algorithmia.AlgorithmiaClient;
 import functionRepository.interfaces.FunctionRepository;
 
+import java.io.Serializable;
+import java.util.function.Function;
+
 import static com.algorithmia.Algorithmia.client;
 
 public class Algorithmia implements FunctionRepository {
@@ -14,8 +17,7 @@ public class Algorithmia implements FunctionRepository {
     }
 
     @Override
-    public AlgorithmiaAsynchronousFunction create(String functionID, Class marshable) {
-        return new AlgorithmiaAsynchronousFunction<Integer>(client.algo(functionID), marshable);
+    public <T extends Serializable, O extends Serializable> Function<T, O> function(String functionID) {
+        return new AlgorithmiaFunction<>(client.algo(functionID));
     }
-
 }
