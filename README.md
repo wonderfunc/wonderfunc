@@ -94,7 +94,7 @@ public class Main() {
         
         List<Integer> output = new ArrayList<>();
     
-        Pipeline pipeline = new Stream<>(list())
+        Pipeline<Integer> pipeline = new Stream<>(list())
                         .map(String::length)
                         .filter(l -> l > 5)
                         .collectTo(output);
@@ -118,7 +118,7 @@ public class Main() {
         
         List<Integer> output = new ArrayList<>();
     
-        Pipeline pipeline = new Stream<>(list())
+        Pipeline<Integer> pipeline = new Stream<>(list())
                         .on(new LocalNodeContainer())
                             .map(String::length)
                             .filter(l -> l > 5)
@@ -166,7 +166,7 @@ public class Main() {
         FunctionRepository algorithmia = new Algorithmia("YOUR_API_KEY");
         Function<String, String> sentimentAnalysis = algorithmia.function("nlp/SentimentAnalysis/1.0.5");
     
-        Pipeline pipeline = new Stream<>(list())
+        Pipeline<Boolean> pipeline = new Stream<>(list())
                         .on(new LocalNodeContainer())
                             .map(s -> sentimentAnalysis.apply(s))
                                 .with(new RemoteExpressionExecutor(new CommentMarshalling()))
