@@ -1,6 +1,6 @@
 # Wonderfunc
 
-This user guide purpose is guiding the Wonderfunc user to use the main use cases.
+This user guide's purpose is guiding the Wonderfunc user to use the main use cases.
 
 ## Getting started
 
