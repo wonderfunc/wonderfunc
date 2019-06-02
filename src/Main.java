@@ -51,7 +51,7 @@ public class Main {
 
         Stream<String> stream = new Stream<>(list());
 
-        Pipeline<Integer> pipeline = stream
+        Pipeline<Boolean> pipeline = stream
                 .on(new LocalNodeContainer())
                     .map(s -> sentimentAnalysis.apply(s))
                         .with(new RemoteExpressionExecutor(new CommentMarshalling()))
