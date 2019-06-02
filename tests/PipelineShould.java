@@ -177,7 +177,7 @@ public class PipelineShould {
     }
 
     @Test
-    public void return_a_doubles_list_using_algorithmia_function_repository() throws InterruptedException {
+    public void return_a_list_of_doubles_using_algorithmia_function_repository() throws InterruptedException {
 
         List<Double> output = new ArrayList<>();
 
@@ -186,8 +186,8 @@ public class PipelineShould {
 
         new Stream<>(comments())
                 .on(new LocalNodeContainer())
-                .map(s -> sentimentAnalysis.apply(s))
-                .with(new RemoteExpressionExecutor(new CommentMarshalling()))
+                    .map(s -> sentimentAnalysis.apply(s))
+                        .with(new RemoteExpressionExecutor(new CommentMarshalling()))
                 .collectTo(output)
                 .execute()
                 .join();
