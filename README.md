@@ -211,5 +211,3 @@ public class Main() {
     }
 }
 ```
-
-This project has been developed together with José Juan Hernández Cabrera and José Évora.
