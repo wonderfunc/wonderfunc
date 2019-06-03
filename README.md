@@ -1,8 +1,12 @@
 # Wonderfunc
 
+Wonderfunc is an open source framework for defining functional pipelines using lambda expresions with a high expressiveness and flexibility. Wonderfunc has been developed by Víctor Ceballos Espinosa, José Juan Hernández Cabrera and José Évora Gómez.
+
+## User guide
+
 This user guide's purpose is guiding the Wonderfunc user to use the main use cases.
 
-## Getting started
+### Getting started
 
 Once Wonderfunc have been included in your project dependencies, you will be able to use it. To start, instantiate a Stream object passing through constructor a objects list. These objects will be the ones that the source node will start transmitting through the pipeline.
 
@@ -38,11 +42,11 @@ public class Main() {
 
 With the previous code we have done the stream to go through the pipeline until it reaches the last node (recollector node) added with the `collectTo` method. It is important noting that when the recollector node is added, a `Pipeline` object is returned instead of a Stream. Unfortunately, this code neither makes any data processing. To **filter** or **map** the stream data, it is necessary adding map nodes or filter nodes.
 
-## Adding map and filter nodes
+### Adding map and filter nodes
 
 After creating the data stream as showing below, **it is possible to add map of filter nodes to the pipeline.**
 
-### Add filter node
+#### Add filter node
  
 To add a filter node, just use the `filter` method passing as a parameter a lambda expression that implements the functional interface Predicate.
  
@@ -63,7 +67,7 @@ public class Main() {
 }
 ```
 
-### Add map node
+#### Add map node
 
 To add a map node, just use the `map method passing as parameter a lambda expression that implements the functional interface Function.
 
@@ -84,7 +88,7 @@ public class Main() {
 }
 ```
 
-### Mixing filter and map nodes
+#### Mixing filter and map nodes
 
 It is possible using more than one kind of node in the same pipeline.
 
@@ -106,7 +110,7 @@ public class Main() {
 }
 ```
 
-## Change NodeContainer
+### Change NodeContainer
 
 All the written code until here will be executed locally. However, **Wonderfunc is built to execute a distributed pipeline in different functional cloud computing platforms**. In order to change the node container where lambda expressions will be executed, just use the `on` method passing as a parameter an object that implements the created interface `NodeContainer`. Initially, **a LocalNodeContainer class has been implemented** to execute locally the pipeline. **This is the default NodeContainer**. Nevertheless, Wonderfunc is an open source framework. This means that anybody can implement and add new classes implementing the NodeContainer interface, adding new functionality to Wonderfunc.
 
@@ -153,7 +157,7 @@ public class Main() {
 }
 ```
 
-## Using FunctionRepository functions
+### Using FunctionRepository functions
 
 Apart from executing lambda functions created in execution time in different node containers, Wonderfunc is prepared to use already created functions placed in what has received the name of `FunctionRepository`. To use functions located in a function repository, an object implementing the interface `FunctionRepository` needs to be created. Once that is completed, the function should be selected using the method `function` in the `FunctionRepository` interface and use the function that it returns inside the lambda expression in a map node.
 
@@ -184,7 +188,7 @@ public class Main() {
  
 To execute functions that are located in a function repository, it is compulsory specifying that a `RemoteExpressionExecutor` will be used to execute asynchronously that function using the `with` method.  
 
-## Pipeline Execution
+### Pipeline Execution
 
 To execute the Pipeline, once it has been built with the `collectTo` method, just call the `execute` method.
 
