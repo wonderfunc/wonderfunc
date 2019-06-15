@@ -107,8 +107,9 @@ public class RemoteExpressionExecutor implements ExpressionExecutor<String, Doub
         JSONArray jsonArray;
         try {
             jsonArray = new JSONArray(output);
-            for (int i = 0; i < jsonArray.length(); i++)
-                deserializeMessages.add(new DataMessage(marshalling.unmarshall(jsonArray.getString(i))));
+            for (int i = 0; i < jsonArray.length(); i++) {
+                deserializeMessages.add(new DataMessage(marshalling.unmarshall(jsonArray.get(i).toString())));
+            }
         } catch (JSONException e) {
             e.printStackTrace();
         }

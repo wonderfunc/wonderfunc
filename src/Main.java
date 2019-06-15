@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.function.Function;
+import java.util.function.Predicate;
 
 public class Main {
 
@@ -21,7 +22,7 @@ public class Main {
     }
 
     private static void pipelineWithoutAlgorithmia() throws InterruptedException {
-        List<Integer> output = new ArrayList<>();
+        List<String> output = new ArrayList<>();
 
         NodeContainer local = new LocalNodeContainer();
 
@@ -30,7 +31,6 @@ public class Main {
         Pipeline<Integer> pipeline = stream
                 .on(local)
                     .filter(s -> s.contains("y"))
-                    .map(String::length)
                 .collectTo(output);
 
 
@@ -46,16 +46,16 @@ public class Main {
         List<Boolean> output = new ArrayList<>();
 
         FunctionRepository algorithmia = new Algorithmia("sim4SmnjN9o5CRPEKS4QxTJBWLg1");
-
         Function<String, String> sentimentAnalysis = algorithmia.function("nlp/SentimentAnalysis/1.0.5");
 
         Stream<String> stream = new Stream<>(list());
+        Function<Double, Boolean> positiveComment = comment -> comment > 0;
 
         Pipeline<Boolean> pipeline = stream
                 .on(new LocalNodeContainer())
                     .map(s -> sentimentAnalysis.apply(s))
                         .with(new RemoteExpressionExecutor(new CommentMarshalling()))
-                    .map(d -> d <= 0)
+                    .map(positiveComment)
                 .collectTo(output);
 
         Thread pipelineThread = pipeline.execute();
