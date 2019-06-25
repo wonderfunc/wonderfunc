@@ -1,28 +1,29 @@
 package utils;
 
-import org.apache.commons.csv.CSVFormat;
-import org.apache.commons.csv.CSVParser;
-import org.apache.commons.csv.CSVRecord;
-
 import java.io.IOException;
-import java.io.Reader;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.List;
 
 public class CredentialProvider {
 
     public static AWSCredentials awsCredentials(String rootKeyFile) {
-        try (Reader reader = Files.newBufferedReader(Paths.get(rootKeyFile));
-            CSVParser csvParser = new CSVParser(reader, CSVFormat.DEFAULT)
-        ) {
-            List<CSVRecord> records = csvParser.getRecords();
-            return new AWSCredentials(records.get(0).get(0).split("=")[1],
-                    records.get(1).get(0).split("=")[1]);
+        AWSCredentials awsCredentials = new AWSCredentials("", "");
+        try {
+            awsCredentials = new AWSCredentials(getAccessKeyID(rootKeyFile), getSecretAccessKey(rootKeyFile));
         } catch (IOException e) {
             e.printStackTrace();
         }
-        return new AWSCredentials("", "");
+        return awsCredentials;
     }
+
+    private static String getSecretAccessKey(String rootKeyFile) throws IOException {
+        return Files.readAllLines(Paths.get(rootKeyFile)).get(1).split("=")[1];
+    }
+
+    private static String getAccessKeyID(String rootKeyFile) throws IOException {
+        return Files.readAllLines(Paths.get(rootKeyFile)).get(0).split("=")[1];
+    }
+
+
 
 }
