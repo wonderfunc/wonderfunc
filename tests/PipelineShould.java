@@ -1,11 +1,13 @@
+import containers.AWSNodeContainer;
 import containers.LocalNodeContainer;
 import expressionExecutor.RemoteExpressionExecutor;
 import functionRepository.algorithmia.Algorithmia;
+import functionRepository.aws.AWSRepository;
 import functionRepository.interfaces.FunctionRepository;
 import marshall.CommentMarshalling;
 import org.junit.Test;
-import stream.Pipeline;
 import stream.Stream;
+import utils.CredentialProvider;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -17,6 +19,8 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 
 public class PipelineShould {
+
+    private final String ALGORITHMIA_API_KEY = "sim4SmnjN9o5CRPEKS4QxTJBWLg1";
 
     @Test
     public void returns_empty_list_when_input_list_is_empty_and_no_nodes_are_added() throws InterruptedException {
@@ -181,12 +185,12 @@ public class PipelineShould {
 
         List<Double> output = new ArrayList<>();
 
-        FunctionRepository algorithmia = new Algorithmia("sim4SmnjN9o5CRPEKS4QxTJBWLg1");
+        FunctionRepository algorithmia = new Algorithmia(ALGORITHMIA_API_KEY);
         Function<String, String> sentimentAnalysis = algorithmia.function("nlp/SentimentAnalysis/1.0.5");
 
         new Stream<>(comments())
                 .on(new LocalNodeContainer())
-                    .map(s -> sentimentAnalysis.apply(s))
+                    .map(sentimentAnalysis)
                         .with(new RemoteExpressionExecutor(new CommentMarshalling()))
                 .collectTo(output)
                 .execute()
@@ -194,6 +198,17 @@ public class PipelineShould {
 
         assertEquals(9, output.size());
         assertThat(output, is(Arrays.asList(-0.6114, 0.4201, 0.0, 0.4939, 0.4019, 0.6588, 0.2235, 0.0, -0.2755)));
+    }
+
+    @Test
+    public void invoke_a_function_on_aws() throws InterruptedException {
+        FunctionRepository aws =
+                new AWSRepository(CredentialProvider
+                        .awsCredentials("C:\\Users\\TDRS\\IdeaProjects\\wonderfunc\\creds\\rootkey.csv"))
+                .onRegion("us-east-1");
+        Function<String, String> awsReverseStrFunction = aws.function("from-java-callable-function");
+
+        assertEquals("olleh", awsReverseStrFunction.apply("hello"));
     }
 
     private static List<String> list() {
