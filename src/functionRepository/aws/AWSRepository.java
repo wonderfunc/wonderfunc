@@ -6,6 +6,7 @@ import com.amazonaws.regions.Regions;
 import com.amazonaws.services.lambda.AWSLambda;
 import com.amazonaws.services.lambda.AWSLambdaClientBuilder;
 import functionRepository.interfaces.FunctionRepository;
+import marshall.Marshalling;
 import utils.AWSCredentials;
 
 import java.io.Serializable;
@@ -28,12 +29,12 @@ public class AWSRepository implements FunctionRepository {
     }
 
     @Override
-    public <T extends Serializable, O extends Serializable> Function<T, O> function(String functionName) {
+    public <T extends Serializable, O extends Serializable> Function<T, O> function(String functionName, Marshalling marshalling) {
         BasicAWSCredentials credentials = new BasicAWSCredentials(this.ACCESS_KEY_ID, this.SECRET_ACCESS_KEY);
         AWSLambda client = AWSLambdaClientBuilder
                 .standard()
                 .withCredentials(new AWSStaticCredentialsProvider(credentials))
                 .withRegion(region).build();
-        return new AWSFunction<>(functionName, client);
+        return new AWSFunction<>(functionName, client, marshalling);
     }
 }

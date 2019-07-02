@@ -1,10 +1,10 @@
-import containers.AWSNodeContainer;
 import containers.LocalNodeContainer;
 import expressionExecutor.RemoteExpressionExecutor;
 import functionRepository.algorithmia.Algorithmia;
 import functionRepository.aws.AWSRepository;
 import functionRepository.interfaces.FunctionRepository;
 import marshall.CommentMarshalling;
+import marshall.StringReverseMarshalling;
 import org.junit.Test;
 import stream.Stream;
 import utils.CredentialProvider;
@@ -186,7 +186,8 @@ public class PipelineShould {
         List<Double> output = new ArrayList<>();
 
         FunctionRepository algorithmia = new Algorithmia(ALGORITHMIA_API_KEY);
-        Function<String, String> sentimentAnalysis = algorithmia.function("nlp/SentimentAnalysis/1.0.5");
+        Function<String, String> sentimentAnalysis =
+                algorithmia.function("nlp/SentimentAnalysis/1.0.5", new CommentMarshalling());
 
         new Stream<>(comments())
                 .on(new LocalNodeContainer())
@@ -206,9 +207,38 @@ public class PipelineShould {
                 new AWSRepository(CredentialProvider
                         .awsCredentials("C:\\Users\\TDRS\\IdeaProjects\\wonderfunc\\creds\\rootkey.csv"))
                 .onRegion("us-east-1");
-        Function<String, String> awsReverseStrFunction = aws.function("from-java-callable-function");
+
+        Function<String, String> awsReverseStrFunction = aws
+                .function("from-java-callable-function", new StringReverseMarshalling());
 
         assertEquals("olleh", awsReverseStrFunction.apply("hello"));
+    }
+
+    @Test
+    public void use_a_lambda_from_aws_in_a_stream() throws InterruptedException {
+        FunctionRepository aws =
+                new AWSRepository(CredentialProvider
+                        .awsCredentials("C:\\Users\\TDRS\\IdeaProjects\\wonderfunc\\creds\\rootkey.csv"))
+                        .onRegion("us-east-1");
+
+        Function<String, String> awsReverseStrFunction = aws
+                .function("from-java-callable-function", new StringReverseMarshalling());
+
+        List<String> list = new ArrayList<>() {{
+            add("Hello");
+            add("Bye");
+        }};
+
+        List<String> result = new ArrayList<>();
+        new Stream<>(list)
+                .map(awsReverseStrFunction)
+                .collectTo(result)
+                .execute()
+                .join();
+        assertEquals(new ArrayList<>(){{
+            add("olleH");
+            add("eyB");
+        }}, result);
     }
 
     private static List<String> list() {

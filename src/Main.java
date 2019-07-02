@@ -46,7 +46,8 @@ public class Main {
         List<Boolean> output = new ArrayList<>();
 
         FunctionRepository algorithmia = new Algorithmia("sim4SmnjN9o5CRPEKS4QxTJBWLg1");
-        Function<String, String> sentimentAnalysis = algorithmia.function("nlp/SentimentAnalysis/1.0.5");
+        Function<String, String> sentimentAnalysis =
+                algorithmia.function("nlp/SentimentAnalysis/1.0.5", new CommentMarshalling());
 
         Stream<String> stream = new Stream<>(list());
         Function<Double, Boolean> positiveComment = comment -> comment > 0;

@@ -1,7 +1,10 @@
 package functionRepository.algorithmia;
 
 import com.algorithmia.AlgorithmiaClient;
+import com.algorithmia.algo.Algorithm;
+import com.algorithmia.algo.AlgorithmRef;
 import functionRepository.interfaces.FunctionRepository;
+import marshall.Marshalling;
 
 import java.io.Serializable;
 import java.util.function.Function;
@@ -17,7 +20,7 @@ public class Algorithmia implements FunctionRepository {
     }
 
     @Override
-    public <T extends Serializable, O extends Serializable> Function<T, O> function(String functionID) {
+    public <T extends Serializable, O extends Serializable> Function<T, O> function(String functionID, Marshalling marshalling) {
         return new AlgorithmiaFunction<>(client.algo(functionID));
     }
 }
